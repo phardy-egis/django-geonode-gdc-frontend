@@ -1,0 +1,15 @@
+version: "3"
+services:
+  gdc-frontend:
+    image: "node:16"
+    user: "node"
+    working_dir: /home/node/app/gdc-frontend
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./app:/home/node/app
+    expose:
+      - "3000"
+    ports:
+      - "3000:3000"
+    command: "npm run start"
