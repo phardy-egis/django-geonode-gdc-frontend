@@ -36,6 +36,13 @@ import {
     ResultList 
 }   from './react-components/GDC.jsx'
 
+// IMGs
+import img0png from './assets/img/img0.PNG'
+import img1png from './assets/img/img1.PNG'
+import img3png from './assets/img/img3.PNG'
+import img4png from './assets/img/img4.PNG'
+import img5png from './assets/img/img5.PNG'
+import img6png from './assets/img/img6.PNG'
 
 // ==================================================================================================================
 // ================================================ MAP LOADING =====================================================
@@ -164,7 +171,7 @@ new L.basemapsSwitcher([
             maxZoom: 20,
             id: 'osm-grey'
         }).addTo(map), //DEFAULT MAP
-        icon: '/static/gdc/img/img0.PNG',
+        icon: img0png,
         name: 'OSM Grey'
     },
 
@@ -173,7 +180,7 @@ new L.basemapsSwitcher([
             maxZoom: 20,
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }), //DEFAULT MAP
-        icon: '/static/gdc/img/img1.PNG',
+        icon: img1png,
         name: 'OSM Base'
     },
 
@@ -182,7 +189,7 @@ new L.basemapsSwitcher([
             maxZoom: 20,
             attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="https://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
         }),
-        icon: '/static/gdc/img/img3.PNG',
+        icon: img3png,
         name: 'OSM Topo'
     },
     {
@@ -191,7 +198,7 @@ new L.basemapsSwitcher([
             subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
             attribution: 'Données cartographiques ©2022 Google'
         }),
-        icon: '/static/gdc/img/img4.PNG',
+        icon: img4png,
         name: 'G. Streets'
     },
     {
@@ -200,7 +207,7 @@ new L.basemapsSwitcher([
             subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
             attribution: 'Données cartographiques ©2022 Google'
         }),
-        icon: '/static/gdc/img/img6.PNG',
+        icon: img6png,
         name: 'G. Hybrid'
     },
     {
@@ -209,7 +216,7 @@ new L.basemapsSwitcher([
             subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
             attribution: 'Données cartographiques ©2022 Google'
         }),
-        icon: '/static/gdc/img/img5.PNG',
+        icon: img5png,
         name: 'G. Satellite'
     },
 ], { position: 'bottomright' }).addTo(map);
