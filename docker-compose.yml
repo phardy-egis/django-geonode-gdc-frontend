@@ -6,6 +6,7 @@ services:
     working_dir: /home/node/app/gdc-frontend
     environment:
       - NODE_ENV=development
+      - WATCHPACK_POLLING=true
     volumes:
       - ./app:/home/node/app
     expose:
