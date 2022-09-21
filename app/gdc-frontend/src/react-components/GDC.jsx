@@ -141,10 +141,10 @@ class Legend extends React.Component {
                     <a className="uk-accordion-title uk-text-small uk-text-bolder" href="#"><span className="uk-margin-small-right uk-text-center" data-uk-icon="icon: table"></span>Extent of layers</a>
                     <div className="uk-accordion-content uk-text-small">
                         <form>
-                            <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+                            <div className="uk-margin uk-grid-small uk-child-width-auto uk-grid">
                                 <label className="uk-form"><input className="uk-checkbox" type="checkbox" onClick={this.toggleBBOXLayer} defaultChecked={true} />  BBOX</label>
                             </div>
-                            <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+                            <div className="uk-margin uk-grid-small uk-child-width-auto uk-grid">
                                 <label className="uk-form"><input className="uk-checkbox" type="checkbox" onClick={this.toggleMarkerLayer} defaultChecked={true} />  Centroids clusters</label>
                             </div>
                         </form>
@@ -157,7 +157,7 @@ class Legend extends React.Component {
 }
 
 // LEGEND ITEMS
-class LegendItem extends React.Component {
+class LegendItem extends React.PureComponent {
 
     constructor(props) {
         super(props);
@@ -793,57 +793,64 @@ class ResultList extends React.Component {
     render() {
 
         var resultlist_items = []
+
+        // Hidding and emptying bbox layer
+        //this.props.target_map.removeLayer(this.props.bbox_layer);
+        //this.props.target_map.removeLayer(this.props.marker_layer);
+        this.props.bbox_layer.clearLayers();
+        this.props.marker_layer.clearLayers();
+        
         for (var i = 0; i < this.state.results.length; i++) {
             var feature = this.state.results[i];
-            console.log(this.state.results[i])
-            // var geojsonFeature = {
-            //     "type": "Feature",
-            //     "properties": {
-            //         "name": "Coors Field",
-            //         "amenity": "Baseball Stadium",
-            //         "popupContent": "This is where the Rockies play!"
-            //     },
-            //     "geometry": {
-            //         "type": "Point",
-            //         "coordinates": [-104.99404, 39.75621]
-            //     }
-            // };
-            var geojsonFeature = {
-                "type": "Feature",
-                "geometry": {
-                    "type": "Polygon",
-                    "coordinates": [
-                        [
-                            120.57557641613953,
-                            16.40199363030183
-                        ],
-                        [
-                            120.57557641613953,
-                            16.428921754543868
-                        ],
-                        [
-                            120.62499023927747,
-                            16.428921754543868
-                        ],
-                        [
-                            120.62499023927747,
-                            16.40199363030183
-                        ],
-                        [
-                            120.57557641613953,
-                            16.40199363030183
-                        ]
-                    ]
-                },
-                "properties": {
-                    "pk": 18
-                }
-            }
-            L.geoJSON(geojsonFeature).addTo(this.props.target_map);
+
+            // Scrolling function
+            var h = "#resultitem_" + feature.properties.id
+            
+            function scrollto() { 
+                console.log(h);
+                UIkit.scroll(document.getElementById(h)).scrollTo(h);
+                UIkit.util.animate(document.getElementById(h), 'uk-animation-shake', 700); 
+            };
+
+            // === BBOX ===
+            // Fetchning
+            var geojsonbboxfeature = L.geoJSON(feature)
+            // Styling
+            var geojsonbboxlayer = geojsonbboxfeature.setStyle({
+                color: "blue",
+                opacity: 1,
+                weight: 1,
+                fillColor: "blue",
+                fillOpacity: 0,
+            });
+            // Assigning a function to scroll to the element (inside result list)
+            geojsonbboxfeature.on('click', scrollto)
+            // Adding geometries elements to the map
+            this.props.bbox_layer.addLayer(geojsonbboxlayer)
+
+            // === MARKER ===
+            // Styling
+            var icon_red = L.icon({
+                iconUrl: layerCentroidIcon,
+                iconSize: [40, 40],
+                iconAnchor: [20, 20],
+            });
+            var geojsoncenterfeature = L.marker(geojsonbboxfeature.getBounds().getCenter(), { icon: icon_red })
+            // Assigning a function to scroll to the element (inside result list)
+            geojsoncenterfeature.on('click', scrollto)
+            // Adding geometries elements to the map
+            this.props.marker_layer.addLayer(geojsoncenterfeature)
+
+
+            // === REACT COMPONENTS ====
             resultlist_items.push(
                 <ResultItem key={feature.properties.pk} pk={feature.properties.pk} coords={feature.geometry.coordinates} domain_src={this.props.domain_src} target_map={this.props.target_map} marker_layer={this.props.marker_layer} target_legend={this.props.target_legend} bbox_layer={this.props.bbox_layer}></ResultItem>
             )
         }
+
+        // Showing layer on map
+        //this.props.target_map.addLayer(this.props.bbox_layer);
+        //this.props.target_map.addLayer(this.props.marker_layer);
         
         var resultlist_title
         if(this.state.status == 'ready'){
@@ -912,7 +919,7 @@ class ImgPlus extends React.Component {
 }
 
 // RESULTS - RESULT LIST ITEMS
-class ResultItem extends React.Component {
+class ResultItem extends React.PureComponent {
 
     constructor(props) {
         super(props);
@@ -969,17 +976,7 @@ class ResultItem extends React.Component {
                         bbox_coords_correct[i] = coords_new
                     }
 
-                    // Setting the layer polygon extent
-                    // Blue (cluster layer)
-                    var bbox_polygon = L.polygon(bbox_coords_correct)
-                    bbox_polygon.setStyle({
-                        color: "blue",
-                        opacity: 1,
-                        weight: 1,
-                        fillColor: "blue",
-                        fillOpacity: 0,
-                    });
-                    
+                    // Setting the layer polygon extent (this shows on result hover)
                     // Red (on hover layer)
                     var bbox_polygon_red = L.polygon(bbox_coords_correct)
                     bbox_polygon_red.setStyle({
@@ -990,55 +987,24 @@ class ResultItem extends React.Component {
                         fillOpacity: 0.3,
                     });
 
-                    // Setting the layer center marker
-                    // Blue (on hover layer)
-                    var icon = L.icon({
-                        iconUrl: layerCentroidIcon,
-                        iconSize: [40, 40],
-                        iconAnchor: [20, 20],
-                    });
-                    var bbox_center = L.marker(bbox_polygon.getBounds().getCenter(), { icon: icon })
-
+                    // Setting the layer center marker (this shows on layer hover)
                     // Red (on hover layer)
                     var icon_red = L.icon({
                         iconUrl: layerCentroidIconRed,
                         iconSize: [40, 40],
                         iconAnchor: [20, 20],
                     });
-                    var bbox_center_red = L.marker(bbox_polygon.getBounds().getCenter(), { icon: icon_red })
-                    
-
-                    // Assigning a function to scroll to the element
-                    var h = "resultitem_" + this.props.pk
-                    function animate() {
-                        UIkit.util.animate(document.getElementById(h), 'uk-animation-shake', 700);
-                    }
-                    function scrollto() {
-                        // document.getElementById(h).scrollIntoView();
-                        UIkit.scroll(document.getElementById('#' + h)).scrollTo('#' + h)
-                        animate()
-                    }
-
-                    bbox_center.on('click', scrollto)
-                    bbox_polygon.on('click', scrollto)
+                    var bbox_center_red = L.marker(bbox_polygon_red.getBounds().getCenter(), { icon: icon_red })
 
                     // Adding layer polygon to map
                     this.setState({
                         status: 'ready',
                         layerData: result,
-                        bbox_polygon: bbox_polygon,
                         bbox_polygon_red: bbox_polygon_red,
-                        bbox_center: bbox_center,
                         bbox_center_red: bbox_center_red,
                         thumbnail_url: thumbnail_url
                         
                     })
-
-                    // Adding geometries elements to the map
-                    if (this.state.bbox_polygon) {
-                        this.props.bbox_layer.addLayer(this.state.bbox_polygon)
-                        this.props.marker_layer.addLayer(this.state.bbox_center)
-                    }
 
                 }
             },
@@ -1052,16 +1018,6 @@ class ResultItem extends React.Component {
         )
     }
     
-    componentWillUnmount() {
-        if (this.state.bbox_polygon){
-            this.state.bbox_polygon.remove()
-        }
-        if (this.state.bbox_center){
-            this.props.marker_layer.removeLayer(this.state.bbox_center)
-            this.props.bbox_layer.removeLayer(this.state.bbox_polygon)
-        }
-    }
-
     handleLayerAdd(){
         // Add layer to legend (legend component will handle layer addition to map)
         this.props.target_legend.addLegendItem(this.props.pk)
@@ -1071,9 +1027,7 @@ class ResultItem extends React.Component {
     handleMouseEnter() {
         // Update bbox colors to red
         this.state.bbox_polygon_red.addTo(this.props.target_map);
-        this.state.bbox_polygon_red.bringToFront();
         this.state.bbox_center_red.addTo(this.props.target_map);
-        this.state.bbox_center_red.bringToFront();
     }
 
     handleMouseLeave(){
@@ -1088,14 +1042,6 @@ class ResultItem extends React.Component {
         if (this.state.status == 'ready') {
 
             var catList = []
-            // for (var i = 0; i < this.state.layerData.adb_themes.length; i++) {
-            //     if (i == this.state.layerData.adb_themes.length - 1) {
-            //         catList.push(<span key={this.state.layerData.adb_themes[i].code}>{this.state.layerData.adb_themes[i].name} ({this.state.layerData.adb_themes[i].code})</span>)
-            //     }
-            //     else {
-            //         catList.push(<span key={this.state.layerData.adb_themes[i].code}>{this.state.layerData.adb_themes[i].name} ({this.state.layerData.adb_themes[i].code}),</span>)
-            //     }
-            // }
             var thumbnailDOM = (<div></div>)
             if (this.state.thumbnail_url != null){
                 thumbnailDOM = (
