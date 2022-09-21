@@ -6,7 +6,7 @@ GDC stands for Geo-data catalogue. It is a light and modern react front-end clie
 GDC Backend is based on à django app that adds specific endpoints to GEONODE base API.
 This plugin is based on UIKit 3 and REACT and is compatible with versions of Geonode 4 and above.
 
-![Plugin screenshot](https://github.com/Inogeo/gdc-frontend/master/README_SCREENSHOT.png?raw=true)
+![Plugin screenshot](https://user-images.githubusercontent.com/16825471/191503130-b8e41b8b-3234-4621-92d7-f896471ec14f.png)
 
 ## Installation with GEONODE
 
