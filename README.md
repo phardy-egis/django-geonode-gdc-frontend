@@ -11,13 +11,11 @@ It is only compatible with versions of Geonode 4 and above.
 Please refer to GDC (Backend) repository to install GDC plugin for Geonode.
 
 ## Developpement
-
 ### Start docker container
 To run the container in development mode, use:
 ```
 docker-compose run -p 3000:3000 gdc-frontend /bin/bash
 ```
-
 ### Run app in development server
 
 This section explains how a new build of the app can be built.
@@ -25,9 +23,7 @@ Once the docker container is started, run the following command:
 ```
 npm start
 ```
-
 ### Build app
-
 This section explains how a new build of the app can be built.
 Once the docker container is started, run the following command:
 ```
