@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1](https://github.com/Inogeo/gdc-frontend/compare/v1.1.0...v1.1.1) (2022-09-21)
+
+
+### Bug Fixes
+
+* added screenshot on the main page ([8e85eab](https://github.com/Inogeo/gdc-frontend/commit/8e85eab7fd2941ef1b5370c88abe7d0c89f23031))
+* minor fix in html ([d02eaef](https://github.com/Inogeo/gdc-frontend/commit/d02eaefd7fb2cee1e769f789f332f351edb1b2fa))
+
 ## [1.1.0](https://github.com/Inogeo/gdc-frontend/compare/v1.0.0...v1.1.0) (2022-09-21)
 
 
