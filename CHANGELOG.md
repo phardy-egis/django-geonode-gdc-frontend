@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/Inogeo/gdc-frontend/compare/v1.0.0...v1.1.0) (2022-09-21)
+
+
+### Features
+
+* changed LICENCE to be compatible with geonode contrib app ([d012599](https://github.com/Inogeo/gdc-frontend/commit/d012599a151d27106dfeb71b9e91209c57b2cbc8))
+
 ## 1.0.0 (2022-09-20)
 
 
