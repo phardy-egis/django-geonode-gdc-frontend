@@ -29,8 +29,8 @@ Once the development server is up and running on port 3000, you can reach the cl
 ```
 http://localhost:3000/?host=%%HOST_URL%%
 ```
-You must replace the %%HOST_URL%% by the URL of your GEONODE's instance (ex: https://development.demo.geonode.org/)
-On this instance, the GDC Backend plugin (Django App) should be installed and available.
+You must replace the **%%HOST_URL%%** by the URL of your GEONODE's instance (ex: https://development.demo.geonode.org/)
+On this instance, **the GDC Backend plugin (Django App) should be installed and running**.
 ### Build app
 This section explains how a new build of the app can be built.
 Once the docker container is started, run the following command:
