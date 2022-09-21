@@ -4,7 +4,9 @@ This repository contains the source code for the frontend REACT app developped f
 GDC stands for Geo-data catalogue. It is a light and modern react front-end client for [GEONODE](https://github.com/GeoNode/geonode)
 
 GDC Backend is based on à django app that adds specific endpoints to GEONODE base API.
-It is only compatible with versions of Geonode 4 and above.
+This plugin is based on UIKit 3 and REACT and is compatible with versions of Geonode 4 and above.
+
+![Plugin screenshot](/Inogeo/gdc-frontend/master/README_SCREENSHOT.png?raw=true)
 
 ## Installation with GEONODE
 
