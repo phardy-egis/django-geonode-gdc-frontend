@@ -57,8 +57,9 @@ function toggleLoading() {
 }
 
 // Setting target domain name
-const queryParams = new URLSearchParams(window.location.search);
-const DOMAIN_NAME_FULL = queryParams.get('host');
+// const queryParams = new URLSearchParams(window.location.search);
+// const DOMAIN_NAME_FULL = queryParams.get('host');
+const DOMAIN_NAME_FULL = process.env.SITEURL;
 
 // Preventing form submission
 $(document).ready(function () {

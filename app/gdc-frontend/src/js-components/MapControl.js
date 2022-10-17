@@ -165,7 +165,7 @@ export class LayerManager {
             format: 'image/png',
             maxZoom: 20,
         }
-        var layerLeaflet = L.tileLayer.wms(this.DOMAIN_NAME_FULL + '/geoserver/ows?', wmsOptions).addTo(this.parentMap);
+        var layerLeaflet = L.tileLayer.wms(this.DOMAIN_NAME_FULL + 'geoserver/ows?', wmsOptions).addTo(this.parentMap);
         layerLeaflet.setOpacity(100)
 
         this.layers[layerKey] = {
