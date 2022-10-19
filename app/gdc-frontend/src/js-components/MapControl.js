@@ -25,6 +25,7 @@ export class FilterManager {
         this.bboxFilterActive = true
         this.bboxFilterValue = ''
         this.mainResultList = null
+        this.results_fetching = []
     }
 
     setResultList(resultList){

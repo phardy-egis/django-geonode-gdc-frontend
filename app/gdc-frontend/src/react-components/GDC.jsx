@@ -213,7 +213,7 @@ class LegendItem extends React.PureComponent {
     }
 
     componentDidMount() {
-        fetch( this.props.domain_src + "gdc/api/resource_detail/" + this.props.id + "/")
+        fetch(this.props.domain_src + "gdc/api/resource_detail/" + this.props.id + "/", { importance: "low" })
             .then(res => res.json())
             .then(
                 (result) => {
@@ -528,7 +528,7 @@ class SelectList extends React.Component {
 
     componentDidMount() {
         var url = this.props.domain_src + this.props.endpoint +'/?' + this.props.filter
-        fetch(url)
+        fetch(url, { importance: "high" })
             .then(res => res.json())
             .then(
                 (result) => {
@@ -599,13 +599,13 @@ class SelectMultipleList extends React.Component {
     }
 
     componentDidMount() {
-        fetch(this.props.domain_src + this.props.endpoint) // '/gdc/api/adb_themes')
+        fetch(this.props.domain_src + this.props.endpoint, { importance: "high" }) // '/gdc/api/adb_themes')
             .then(res => res.json())
             .then(
                 (result) => {
                     this.setState({
                         status: 'ready',
-                        choices: result.categories,
+                        choices: result,
                     })
                 },
                 (error) => {
@@ -776,7 +776,7 @@ class ResultList extends React.Component {
     }
 
     componentDidMount() {
-        fetch(this.props.mainfiltermgr.url.toString())
+        fetch(this.props.mainfiltermgr.url.toString(), { importance: "high" })
             .then(res => res.json())
             .then(
                 (result) => {
@@ -792,7 +792,7 @@ class ResultList extends React.Component {
                         error
                     });
                 }
-            )
+        )
     }
 
     render() {
@@ -876,7 +876,7 @@ class ResultList extends React.Component {
         return (
             <div className="uk-margin-small-left" >
                 {resultlist_title}
-                <div className="gdc-custom-scroller uk-padding-small uk-padding-remove-bottom" style={{height:'calc(100vh - 200px)'}}>
+                <div id="resultListScrollArea" className="gdc-custom-scroller uk-padding-small uk-padding-remove-bottom" style={{height:'calc(100vh - 200px)'}}>
                     {resultlist_items}
                 </div>
             </div>
@@ -938,97 +938,133 @@ class ResultItem extends React.PureComponent {
         super(props);
         this.state = {
             status:'loading',
-            layerData: {}
+            layerData: {},
+            layerDataLoaded: false
         };
         this.handleLayerAdd = this.handleLayerAdd.bind(this);
         this.handleMouseEnter = this.handleMouseEnter.bind(this);
         this.handleMouseLeave = this.handleMouseLeave.bind(this);
+        this.handleEnterViewport = this.handleEnterViewport.bind(this);
+        this.handleEnterViewportAlt = this.handleEnterViewportAlt.bind(this);
+        this.resultItemRef = React.createRef();
+        this.n_loads = 0 
     }
 
     
     componentDidMount() {
-        fetch(this.props.domain_src + "gdc/api/resource_detail/" + this.props.pk + "/").then(res => res.json()).then(
-            (result) => {
-                if (result.hasOwnProperty('success')) {
-                    if (!result.success) {
+
+        let options = {
+            root: document.querySelector('#main_result_list_container'),
+            rootMargin: '10px',
+            threshold: 1
+        }
+
+        let observer = new IntersectionObserver(this.handleEnterViewport, options)
+
+        observer.observe(this.resultItemRef.current)
+
+        if (observer.takeRecords().length > 0){
+            this.handleEnterViewport()
+            console.log(observer.takeRecords())
+            console.log("result to be displayed")
+        }
+
+    }
+
+    handleEnterViewportAlt() {
+        console.log("entered in viewport")
+    }
+
+    handleEnterViewport(){
+        console.log("load triggered")
+        if (!this.state.layerDataLoaded && this.n_loads > 0){
+            fetch(this.props.domain_src + "gdc/api/resource_detail/" + this.props.pk + "/", { importance: "low" }).then(res => res.json()).then(
+                (result) => {
+                    if (result.hasOwnProperty('success')) {
+                        if (!result.success) {
+                            this.setState({
+                                status: 'hidden',
+                                layerData: {}
+                            })
+
+                        }
+                    }
+                    else {
+                        // Setting title nicer
+                        result.title = toTitleCase(result.title.replaceAll('_', ' '))
+
+                        // Setting date nicer
+                        var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                        var date_refactor = new Date(result.date)
+                        result.date = date_refactor.toLocaleDateString("en-US", options)
+
+                        // Changing thumbnail URL
+                        var thumbnail_url = null
+                        if (result.thumbnail_url != null) {
+                            try {
+                                var thumbnail_url = new URL(result.thumbnail_url.toString())
+                                thumbnail_url = this.props.domain_src + thumbnail_url.pathname.toString().substring(1)
+
+                            } catch (error) {
+                                console.error('Bad URL for thumbnail')
+                            }
+
+                        }
+                        result.thumbnail_url = thumbnail_url
+
+                        // Setting bbox coords
+                        var bbox_coords_correct = this.props.coords
+                        for (var i = 0; i < bbox_coords_correct.length; i++) {
+                            var coords_old = bbox_coords_correct[i]
+                            var coords_new = [coords_old[1], coords_old[0]]
+                            bbox_coords_correct[i] = coords_new
+                        }
+
+                        // Setting the layer polygon extent (this shows on result hover)
+                        // Red (on hover layer)
+                        var bbox_polygon_red = L.polygon(bbox_coords_correct)
+                        bbox_polygon_red.setStyle({
+                            color: "red",
+                            opacity: 1,
+                            weight: 1,
+                            fillColor: "red",
+                            fillOpacity: 0.3,
+                        });
+
+                        // Setting the layer center marker (this shows on layer hover)
+                        // Red (on hover layer)
+                        var icon_red = L.icon({
+                            iconUrl: layerCentroidIconRed,
+                            iconSize: [40, 40],
+                            iconAnchor: [20, 20],
+                        });
+                        var bbox_center_red = L.marker(bbox_polygon_red.getBounds().getCenter(), { icon: icon_red })
+
+                        // Adding layer polygon to map
                         this.setState({
-                            status: 'hidden',
-                            layerData: {}
+                            status: 'ready',
+                            layerData: result,
+                            layerDataLoaded: true,
+                            bbox_polygon_red: bbox_polygon_red,
+                            bbox_center_red: bbox_center_red,
+                            thumbnail_url: thumbnail_url
+
                         })
 
                     }
-                }
-                else {
-                    // Setting title nicer
-                    result.title = toTitleCase(result.title.replaceAll('_', ' '))
-
-                    // Setting date nicer
-                    var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-                    var date_refactor = new Date(result.date)
-                    result.date = date_refactor.toLocaleDateString("en-US", options)
-
-                    // Changing thumbnail URL
-                    var thumbnail_url = null
-                    if (result.thumbnail_url != null) {
-                        try {
-                            var thumbnail_url = new URL(result.thumbnail_url.toString())
-                            thumbnail_url = this.props.domain_src + thumbnail_url.pathname.toString().substring(1)
-
-                        } catch (error) {
-                            console.error('Bad URL for thumbnail')
-                        }
-
-                    }
-                    result.thumbnail_url = thumbnail_url
-
-                    // Setting bbox coords
-                    var bbox_coords_correct = this.props.coords
-                    for (var i = 0; i < bbox_coords_correct.length; i++) {
-                        var coords_old = bbox_coords_correct[i]
-                        var coords_new = [coords_old[1], coords_old[0]]
-                        bbox_coords_correct[i] = coords_new
-                    }
-
-                    // Setting the layer polygon extent (this shows on result hover)
-                    // Red (on hover layer)
-                    var bbox_polygon_red = L.polygon(bbox_coords_correct)
-                    bbox_polygon_red.setStyle({
-                        color: "red",
-                        opacity: 1,
-                        weight: 1,
-                        fillColor: "red",
-                        fillOpacity: 0.3,
-                    });
-
-                    // Setting the layer center marker (this shows on layer hover)
-                    // Red (on hover layer)
-                    var icon_red = L.icon({
-                        iconUrl: layerCentroidIconRed,
-                        iconSize: [40, 40],
-                        iconAnchor: [20, 20],
-                    });
-                    var bbox_center_red = L.marker(bbox_polygon_red.getBounds().getCenter(), { icon: icon_red })
-
-                    // Adding layer polygon to map
+                },
+                (error) => {
+                    UIkit.notification('Error retrieving datasets results from server ' + toString(error), 'danger');
                     this.setState({
-                        status: 'ready',
-                        layerData: result,
-                        bbox_polygon_red: bbox_polygon_red,
-                        bbox_center_red: bbox_center_red,
-                        thumbnail_url: thumbnail_url
-                        
-                    })
-
+                        status: 'error',
+                        error
+                    });
                 }
-            },
-            (error) => {
-                UIkit.notification('Error retrieving datasets results from server ' + toString(error), 'danger');
-                this.setState({
-                    status: 'error',
-                    error
-                });
-            }
-        )
+            )
+        }
+        if(this.n_loads < 1){
+            this.n_loads += 1
+        }
     }
     
     handleLayerAdd(){
@@ -1064,14 +1100,13 @@ class ResultItem extends React.PureComponent {
             if (this.state.thumbnail_url != null){
                 thumbnailDOM = (
                     <div className="uk-width-1-3@m uk-flex-first">
-                        <ImgPlus key={uuidv4()} src={this.state.thumbnail_url.replace('http://', window.location.protocol + '://').replace('https://', window.location.protocol + '://')} width="500" height="500" alt="Layer thumbnail"></ImgPlus>
+                        <ImgPlus key={uuidv4()} src={this.state.thumbnail_url} width="500" height="500" alt="Layer thumbnail"></ImgPlus>
                     </div>
                 )
             }
-
             
             var domToRender = (
-                <div id={"resultitem_"+this.props.pk} key={this.props.pk} className="uk-animation-fade uk-margin-small-bottom uk-padding-small uk-card uk-card-body gdc-custom-border uk-transition-toggle" onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave} >
+                <div ref={this.resultItemRef} id={"resultitem_"+this.props.pk} key={this.props.pk} className="uk-animation-fade uk-margin-small-bottom uk-padding-small uk-card uk-card-body gdc-custom-border uk-transition-toggle" onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave} >
                     <p className="uk-margin-small uk-text-small uk-text-bolder">{this.state.layerData.title}</p>
                     <ul className="uk-margin-small uk-iconnav">
                         <li><a href={"#modal_layerresult_" + this.props.pk} data-uk-tooltip="Display layer information" data-uk-icon="icon: info" data-uk-toggle=""></a></li>
@@ -1106,7 +1141,7 @@ class ResultItem extends React.PureComponent {
         }
         else if (this.state.status == 'hidden'){
             var domToRender = (
-                <div key={this.props.pk} className=" uk-animation-fade uk-margin-small-bottom uk-padding-small uk-card uk-card-body gdc-custom-border" onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave} >
+                <div ref={this.resultItemRef} key={this.props.pk} className=" uk-animation-fade uk-margin-small-bottom uk-padding-small uk-card uk-card-body gdc-custom-border" onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave} >
                     <p className="uk-margin-small uk-text-small uk-text-bolder uk-text-muted">Data not visible.</p>
                     <div className="uk-padding-remove uk-grid-small uk-text-muted" data-uk-grid>
                         <p className="uk-text-justify uk-text-small uk-text-muted">Insufficient permissions to access this dataset.</p>
@@ -1118,7 +1153,7 @@ class ResultItem extends React.PureComponent {
         }
         else {
             var domToRender = (
-                <div key={this.props.pk} className="uk-animation-fade uk-margin-small-bottom uk-padding-small uk-card uk-card-body gdc-custom-border">
+                <div ref={this.resultItemRef} key={this.props.pk} className="uk-animation-fade uk-margin-small-bottom uk-padding-small uk-card uk-card-body gdc-custom-border">
                     <p className="uk-animation-fade uk-padding-small uk-text-small uk-text-bolder"><span data-uk-spinner className="uk-padding-remove"></span>&nbsp; &nbsp; &nbsp;Result loading...</p>
                 </div>
             )
