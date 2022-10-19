@@ -626,8 +626,13 @@ class SelectMultipleList extends React.Component {
             var choices_ordered = this.state.choices.sort((a, b) => a.position_index - b.position_index)
             for (var i = 0; i < choices_ordered.length; i++) {
                 var item = choices_ordered[i];
-                var icon_url = new URL(item["icon_img"])
-                icon_url = icon_url.pathname
+                if (item["icon_img"] != null){
+                    var icon_url = new URL(item["icon_img"])
+                    icon_url = icon_url.pathname
+                }
+                else {
+                    var icon_url = null
+                }
 
                 list_items.push(
                     <SelectMulitpleListItem mainfiltermgr={this.props.mainfiltermgr} domain_src={this.props.domain_src} key={item["identifier"]} code={item["identifier"]} parent={this.props.filter_key} icon={icon_url} name={item["gn_description"]} item_id={item["identifier"]}></SelectMulitpleListItem>
@@ -699,7 +704,7 @@ class SelectMulitpleListItem extends React.Component {
     }
 
     render() {
-
+            
         if(this.state.active){
             var itemDom = <img className="uk-icon-image gdc-custom-theme-icon-selected" src={this.props.domain_src + this.props.icon.substring(1)} width="20px" height="20px" data-uk-svg="" ></img>
         }
@@ -802,50 +807,58 @@ class ResultList extends React.Component {
         
         for (var i = 0; i < this.state.results.length; i++) {
             var feature = this.state.results[i];
+            if (feature.geometry != null){
+                // Scrolling function
+                var h = "#resultitem_" + feature.properties.id
 
-            // Scrolling function
-            var h = "#resultitem_" + feature.properties.id
+                function scrollto() {
+                    console.log(h);
+                    UIkit.scroll(document.getElementById(h)).scrollTo(h);
+                    UIkit.util.animate(document.getElementById(h), 'uk-animation-shake', 700);
+                };
+
+                // === BBOX ===
+                // Fetchning
+                var geojsonbboxfeature = L.geoJSON(feature)
+                // Styling
+                var geojsonbboxlayer = geojsonbboxfeature.setStyle({
+                    color: "blue",
+                    opacity: 1,
+                    weight: 1,
+                    fillColor: "blue",
+                    fillOpacity: 0,
+                });
+                // Assigning a function to scroll to the element (inside result list)
+                geojsonbboxfeature.on('click', scrollto)
+                // Adding geometries elements to the map
+                this.props.bbox_layer.addLayer(geojsonbboxlayer)
+
+                // === MARKER ===
+                // Styling
+                var icon_red = L.icon({
+                    iconUrl: layerCentroidIcon,
+                    iconSize: [40, 40],
+                    iconAnchor: [20, 20],
+                });
+                var geojsoncenterfeature = L.marker(geojsonbboxfeature.getBounds().getCenter(), { icon: icon_red })
+                // Assigning a function to scroll to the element (inside result list)
+                geojsoncenterfeature.on('click', scrollto)
+                // Adding geometries elements to the map
+                this.props.marker_layer.addLayer(geojsoncenterfeature)
+
+
+                // === REACT COMPONENTS ====
+                resultlist_items.push(
+                    <ResultItem key={feature.properties.pk} pk={feature.properties.pk} coords={feature.geometry.coordinates} domain_src={this.props.domain_src} target_map={this.props.target_map} marker_layer={this.props.marker_layer} target_legend={this.props.target_legend} bbox_layer={this.props.bbox_layer}></ResultItem>
+                )
+            }
+            else {
+                // === REACT COMPONENTS ====
+                resultlist_items.push(
+                    <ResultItem key={feature.properties.pk} pk={feature.properties.pk}  domain_src={this.props.domain_src} target_map={this.props.target_map} marker_layer={this.props.marker_layer} target_legend={this.props.target_legend} bbox_layer={this.props.bbox_layer}></ResultItem>
+                )
+            }
             
-            function scrollto() { 
-                console.log(h);
-                UIkit.scroll(document.getElementById(h)).scrollTo(h);
-                UIkit.util.animate(document.getElementById(h), 'uk-animation-shake', 700); 
-            };
-
-            // === BBOX ===
-            // Fetchning
-            var geojsonbboxfeature = L.geoJSON(feature)
-            // Styling
-            var geojsonbboxlayer = geojsonbboxfeature.setStyle({
-                color: "blue",
-                opacity: 1,
-                weight: 1,
-                fillColor: "blue",
-                fillOpacity: 0,
-            });
-            // Assigning a function to scroll to the element (inside result list)
-            geojsonbboxfeature.on('click', scrollto)
-            // Adding geometries elements to the map
-            this.props.bbox_layer.addLayer(geojsonbboxlayer)
-
-            // === MARKER ===
-            // Styling
-            var icon_red = L.icon({
-                iconUrl: layerCentroidIcon,
-                iconSize: [40, 40],
-                iconAnchor: [20, 20],
-            });
-            var geojsoncenterfeature = L.marker(geojsonbboxfeature.getBounds().getCenter(), { icon: icon_red })
-            // Assigning a function to scroll to the element (inside result list)
-            geojsoncenterfeature.on('click', scrollto)
-            // Adding geometries elements to the map
-            this.props.marker_layer.addLayer(geojsoncenterfeature)
-
-
-            // === REACT COMPONENTS ====
-            resultlist_items.push(
-                <ResultItem key={feature.properties.pk} pk={feature.properties.pk} coords={feature.geometry.coordinates} domain_src={this.props.domain_src} target_map={this.props.target_map} marker_layer={this.props.marker_layer} target_legend={this.props.target_legend} bbox_layer={this.props.bbox_layer}></ResultItem>
-            )
         }
 
         // Showing layer on map
@@ -1026,14 +1039,19 @@ class ResultItem extends React.PureComponent {
 
     handleMouseEnter() {
         // Update bbox colors to red
-        this.state.bbox_polygon_red.addTo(this.props.target_map);
-        this.state.bbox_center_red.addTo(this.props.target_map);
+        if (this.state.bbox_polygon_red != null) {
+            this.state.bbox_polygon_red.addTo(this.props.target_map);
+            this.state.bbox_center_red.addTo(this.props.target_map);
+        }
     }
 
     handleMouseLeave(){
         // Update bbox colors to blue
-        this.state.bbox_polygon_red.remove()
-        this.state.bbox_center_red.remove();
+        if (this.state.bbox_polygon_red != null){
+            this.state.bbox_polygon_red.remove()
+            this.state.bbox_center_red.remove();
+        }
+
         //this.state.bbox_center.remove()
     }
 
