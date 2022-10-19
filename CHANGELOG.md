@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.0](https://github.com/phardy-egis/django-geonode-gdc-frontend/compare/v1.1.1...v1.2.0) (2022-10-19)
+
+
+### Features
+
+* added the possibliity of setting the site url from the .env file ([0ecfc5d](https://github.com/phardy-egis/django-geonode-gdc-frontend/commit/0ecfc5d598ea5f1911b412c010e870ad957ef8e3))
+
+
+### Bug Fixes
+
+* **env:** added the possiblity of changing the domain name depending on the .env file ([4b69d0b](https://github.com/phardy-egis/django-geonode-gdc-frontend/commit/4b69d0bd4b7f737aff09893f51878fa8b56650f3))
+
 ## [1.1.1](https://github.com/Inogeo/gdc-frontend/compare/v1.1.0...v1.1.1) (2022-09-21)
 
 
