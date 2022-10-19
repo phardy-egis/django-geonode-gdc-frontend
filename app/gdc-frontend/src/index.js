@@ -298,7 +298,7 @@ ReactDOM.render(
     document.querySelector('#region_filter_container')
 );
 ReactDOM.render(
-    <SelectMultipleList id='categories_filter' domain_src={DOMAIN_NAME_FULL} mainfiltermgr={mainFilterManager} filter_key='categories' endpoint='api/v2/categories' verbose_name='Data theme'></SelectMultipleList>,
+    <SelectMultipleList id='categories_filter' domain_src={DOMAIN_NAME_FULL} mainfiltermgr={mainFilterManager} filter_key='categories' endpoint='gdc/api/categories' verbose_name='Data theme'></SelectMultipleList>,
     document.querySelector('#categorie_filter_container')
 );
 ReactDOM.render(
