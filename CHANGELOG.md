@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.1](https://github.com/phardy-egis/django-geonode-gdc-frontend/compare/v1.2.0...v1.2.1) (2022-10-21)
+
+
+### Bug Fixes
+
+* **assets:** minified image size ([42f1922](https://github.com/phardy-egis/django-geonode-gdc-frontend/commit/42f1922179850ac9746aff975b62be28065fdeaa))
+* **env:** added env variable allowig hot restart of CRA during dev ([9b47a75](https://github.com/phardy-egis/django-geonode-gdc-frontend/commit/9b47a755cbbecfc0dd8b952719fd11440a96db91))
+
 ## [1.2.0](https://github.com/phardy-egis/django-geonode-gdc-frontend/compare/v1.1.1...v1.2.0) (2022-10-19)
 
 
