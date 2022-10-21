@@ -952,25 +952,27 @@ class ResultItem extends React.PureComponent {
 
     
     componentDidMount() {
-        let resultDomContainer = document.querySelector('#main_result_list_container')
+        
+        // Observe all item results to know if they are visible in viewport, when visible, loading is triggered
         let options = {
-            root: resultDomContainer,
-            rootMargin: '50%',
-            threshold: 1
+            root: this.resultDomContainer,
+            rootMargin: '100%',
+            threshold: 0.5
         }     
 
         let observer = new IntersectionObserver(this.handleEnterViewport, options)
 
         observer.observe(this.resultItemRef.current)
 
-        if (elmtIsVisible(this.resultItemRef.current, resultDomContainer)) {
-            this.handleEnterViewport();
+         // At first result list generation, we force item to get loaded it he is visible
+        if (elmtIsVisible(this.resultItemRef.current, this.resultDomContainer)) {
+            this.handleEnterViewport()
         }
 
     }
 
     handleEnterViewport(){
-        if (!this.state.layerDataLoaded && this.n_loads > 0){
+        if (!this.state.layerDataLoaded && this.n_loads > 0) {
             fetch(this.props.domain_src + "gdc/api/resource_detail/" + this.props.pk + "/", { importance: "low" }).then(res => res.json()).then(
                 (result) => {
                     if (result.hasOwnProperty('success')) {
@@ -1007,9 +1009,7 @@ class ResultItem extends React.PureComponent {
 
                         // Setting bbox coords
                         var bbox_coords_correct = this.props.coords
-                        console.log(this.props.pk)
-                        console.log(bbox_coords_correct)
-                        if (bbox_coords_correct != null){
+                        if (bbox_coords_correct != null) {
                             for (var i = 0; i < bbox_coords_correct.length; i++) {
                                 var coords_old = bbox_coords_correct[i]
                                 var coords_new = [coords_old[1], coords_old[0]]
@@ -1066,7 +1066,7 @@ class ResultItem extends React.PureComponent {
                     }
                 },
                 (error) => {
-                    UIkit.notification('Error fetching data for dataset [pk:'+ this.props.pk+']', 'danger');
+                    UIkit.notification('Error fetching data for dataset [pk:' + this.props.pk + ']', 'danger');
                     this.setState({
                         status: 'error',
                         error
@@ -1076,7 +1076,7 @@ class ResultItem extends React.PureComponent {
         }
         if(this.n_loads < 1){
             this.n_loads += 1
-        }
+        }        
     }
     
     handleLayerAdd(){
