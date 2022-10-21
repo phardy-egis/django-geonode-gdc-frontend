@@ -287,6 +287,7 @@ class LegendItem extends React.PureComponent {
                         status: 'error',
                         error
                     });
+                    console.log(error);
                 }
             )
     }
@@ -543,6 +544,7 @@ class SelectList extends React.Component {
                         status: 'error',
                         error
                     });
+                    console.log(error);
                 }
             )
     }
@@ -614,6 +616,7 @@ class SelectMultipleList extends React.Component {
                         status: 'error',
                         error
                     });
+                    console.log(error);
                 }
             )
     }
@@ -770,107 +773,121 @@ class ResultList extends React.Component {
         super(props);
         this.state = {
             status: 'loading',
-            results:[]
         };
-
+        this.abortController = new AbortController()
+        this.refreshResults = this.refreshResults.bind(this);
     }
 
-    componentDidMount() {
+    refreshResults(){
+
+        // Set state to loading
+        this.setState({
+            status: 'loading',
+            results: this.state.result
+        })
+
+        // Fetching data
         fetch(this.props.mainfiltermgr.url.toString(), { importance: "high" })
             .then(res => res.json())
             .then(
                 (result) => {
                     this.setState({
-                        status:'ready',
-                        results:result
+                        status: 'ready',
+                        results: result
                     })
                 },
                 (error) => {
-                    UIkit.notification('Error fetching data for result list', 'danger');                    
+                    UIkit.notification('Error fetching data for result list', 'danger');
                     this.setState({
                         status: 'error',
                         error
                     });
+                    console.log(error)
                 }
-        )
+            )
+    }
+
+    componentDidMount() {
+        this.refreshResults()
     }
 
     render() {
 
         var resultlist_items = []
+        var resultlist_title
+        console.log('render')
 
-        // Hidding and emptying bbox layer
-        //this.props.target_map.removeLayer(this.props.bbox_layer);
-        //this.props.target_map.removeLayer(this.props.marker_layer);
-        this.props.bbox_layer.clearLayers();
-        this.props.marker_layer.clearLayers();
         
-        for (var i = 0; i < this.state.results.length; i++) {
-            var feature = this.state.results[i];
-            if (feature.geometry != null){
-                // Scrolling function
-                var h = "#resultitem_" + feature.properties.pk
-                console.log(feature.properties.pk)
-                console.log(feature.geometry)
+        if (typeof this.state.results != 'undefined' && this.state.status != 'loading'){
+            // Hidding and emptying bbox layer
+            //this.props.target_map.removeLayer(this.props.bbox_layer);
+            //this.props.target_map.removeLayer(this.props.marker_layer);
+            this.props.bbox_layer.clearLayers();
+            this.props.marker_layer.clearLayers();
 
-                function scrollto() {
-                    UIkit.scroll(document.getElementById(h)).scrollTo(h);
-                    UIkit.util.animate(document.getElementById(h), 'uk-animation-shake', 700);
-                };
+            // Loading results
+            for (var i = 0; i < this.state.results.features.length; i++) {
+                var feature = this.state.results.features[i];
+                if (feature.geometry != null) {
+                    // Scrolling function
+                    var h = "#resultitem_" + feature.properties.pk
 
-                // === BBOX ===
-                // Fetchning
-                var geojsonbboxfeature = L.geoJSON(feature)
-                // Styling
-                var geojsonbboxlayer = geojsonbboxfeature.setStyle({
-                    color: "blue",
-                    opacity: 1,
-                    weight: 1,
-                    fillColor: "blue",
-                    fillOpacity: 0,
-                });
-                // Assigning a function to scroll to the element (inside result list)
-                geojsonbboxfeature.on('click', scrollto)
-                // Adding geometries elements to the map
-                this.props.bbox_layer.addLayer(geojsonbboxlayer)
+                    function scrollto() {
+                        UIkit.scroll(document.getElementById(h)).scrollTo(h);
+                        UIkit.util.animate(document.getElementById(h), 'uk-animation-shake', 700);
+                    };
 
-                // === MARKER ===
-                // Styling
-                var icon_red = L.icon({
-                    iconUrl: layerCentroidIcon,
-                    iconSize: [40, 40],
-                    iconAnchor: [20, 20],
-                });
-                var geojsoncenterfeature = L.marker(geojsonbboxfeature.getBounds().getCenter(), { icon: icon_red })
-                // Assigning a function to scroll to the element (inside result list)
-                geojsoncenterfeature.on('click', scrollto)
-                // Adding geometries elements to the map
-                this.props.marker_layer.addLayer(geojsoncenterfeature)
+                    // === BBOX ===
+                    // Fetchning
+                    var geojsonbboxfeature = L.geoJSON(feature)
+                    // Styling
+                    var geojsonbboxlayer = geojsonbboxfeature.setStyle({
+                        color: "blue",
+                        opacity: 1,
+                        weight: 1,
+                        fillColor: "blue",
+                        fillOpacity: 0,
+                    });
+                    // Assigning a function to scroll to the element (inside result list)
+                    geojsonbboxfeature.on('click', scrollto)
+                    // Adding geometries elements to the map
+                    this.props.bbox_layer.addLayer(geojsonbboxlayer)
 
+                    // === MARKER ===
+                    // Styling
+                    var icon_red = L.icon({
+                        iconUrl: layerCentroidIcon,
+                        iconSize: [40, 40],
+                        iconAnchor: [20, 20],
+                    });
+                    var geojsoncenterfeature = L.marker(geojsonbboxfeature.getBounds().getCenter(), { icon: icon_red })
+                    // Assigning a function to scroll to the element (inside result list)
+                    geojsoncenterfeature.on('click', scrollto)
+                    // Adding geometries elements to the map
+                    this.props.marker_layer.addLayer(geojsoncenterfeature)
 
-                // === REACT COMPONENTS ====
-                resultlist_items.push(
-                    <ResultItem key={feature.properties.pk} pk={feature.properties.pk} coords={feature.geometry.coordinates} domain_src={this.props.domain_src} target_map={this.props.target_map} marker_layer={this.props.marker_layer} target_legend={this.props.target_legend} bbox_layer={this.props.bbox_layer}></ResultItem>
-                )
+                    resultlist_items.push(
+                        <ResultItem key={feature.properties.pk} pk={feature.properties.pk} coords={feature.geometry.coordinates} domain_src={this.props.domain_src} target_map={this.props.target_map} marker_layer={this.props.marker_layer} target_legend={this.props.target_legend} bbox_layer={this.props.bbox_layer}></ResultItem>
+                    )
+                }
+                else {
+                    // TODO: optimize feature loading when there is no geometry 
+                    resultlist_items.push(
+                        <ResultItem key={feature.properties.pk} pk={feature.properties.pk} domain_src={this.props.domain_src} target_map={this.props.target_map} marker_layer={this.props.marker_layer} target_legend={this.props.target_legend} bbox_layer={this.props.bbox_layer}></ResultItem>
+                    )
+                }
+            }
+        }
+
+        if (typeof this.state.results != 'undefined' && this.state.status != 'loading' ) {
+            if (this.state.results.features.length > 0) {
+                resultlist_title = <p className="uk-text-default uk-text-middle uk-margin-small-top uk-margin-small-bottom"> {this.state.results.features.length} Results</p>
             }
             else {
-                // === REACT COMPONENTS ====
-                resultlist_items.push(
-                    <ResultItem key={feature.properties.pk} pk={feature.properties.pk}  domain_src={this.props.domain_src} target_map={this.props.target_map} marker_layer={this.props.marker_layer} target_legend={this.props.target_legend} bbox_layer={this.props.bbox_layer}></ResultItem>
-                )
+                resultlist_title = <p className="uk-text-default uk-text-middle uk-margin-small-top uk-margin-small-bottom"><span data-uk-spinner uk-spinner="ratio: 0.8" className="uk-padding-remove"></span> &nbsp; Loading results...</p>
             }
-            
         }
-
-        // Showing layer on map
-        //this.props.target_map.addLayer(this.props.bbox_layer);
-        //this.props.target_map.addLayer(this.props.marker_layer);
-        
-        var resultlist_title
-        if(this.state.status == 'ready'){
-            resultlist_title = <p className="uk-text-default uk-text-middle uk-margin-small-top uk-margin-small-bottom"> {this.state.results.length} Results</p>
-        }
-        else {
+        else{
             resultlist_title = <p className="uk-text-default uk-text-middle uk-margin-small-top uk-margin-small-bottom"><span data-uk-spinner uk-spinner="ratio: 0.8" className="uk-padding-remove"></span> &nbsp; Loading results...</p>
         }
 
@@ -881,7 +898,6 @@ class ResultList extends React.Component {
                     {resultlist_items}
                 </div>
             </div>
-
         )
     }
 }
@@ -947,6 +963,7 @@ class ResultItem extends React.PureComponent {
         this.handleMouseLeave = this.handleMouseLeave.bind(this);
         this.handleEnterViewport = this.handleEnterViewport.bind(this);
         this.resultItemRef = React.createRef();
+        this.resultDomContainer = document.querySelector('#resultListScrollArea');
         this.n_loads = 0 
     }
 
@@ -959,9 +976,7 @@ class ResultItem extends React.PureComponent {
             rootMargin: '100%',
             threshold: 0.5
         }     
-
         let observer = new IntersectionObserver(this.handleEnterViewport, options)
-
         observer.observe(this.resultItemRef.current)
 
          // At first result list generation, we force item to get loaded it he is visible
@@ -1046,10 +1061,8 @@ class ResultItem extends React.PureComponent {
                                 thumbnail_url: thumbnail_url
 
                             })
-                            
                         }
                         else {
-
                             // Adding layer polygon to map
                             this.setState({
                                 status: 'ready',
@@ -1061,8 +1074,6 @@ class ResultItem extends React.PureComponent {
 
                             })
                         }
-                        
-
                     }
                 },
                 (error) => {
@@ -1071,6 +1082,7 @@ class ResultItem extends React.PureComponent {
                         status: 'error',
                         error
                     });
+                    console.log(error);
                 }
             )
         }

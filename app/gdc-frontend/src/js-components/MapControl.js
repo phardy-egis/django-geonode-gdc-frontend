@@ -82,56 +82,9 @@ export class FilterManager {
     }
 
     applyFilters() {
-
-        function setState(result, is_loading=false) {
-            if (is_loading && result != null){
-                this.mainResultList.setState({
-                    status: 'loading',
-                    results: result
-                })
-            }
-            else {
-                if (result != null) {
-                    this.mainResultList.setState({
-                        status: 'ready',
-                        results: result.features
-                    })
-                }
-            }
-        }
-        setState = setState.bind(this)
-
         if (this.mainResultList != null){
-            setState(this.mainResultList.state.results, true)
+            this.mainResultList.refreshResults()
         }
-        function setStateError(result) {
-            UIkit.notification('Error retrieving datasets results from server', 'danger');
-            this.mainResultList.setState({
-                status: 'error',
-                error: result
-            });
-        }
-        setStateError = setStateError.bind(this)
-
-        fetch(this.url)
-            .then(
-                function (res) {
-                    try {
-                        return res.json()
-                    }
-                    catch (error) {
-                        return null
-                    }
-                }
-            )
-            .then(
-                setState,
-                setStateError
-            )
-
-
-
-
     }
 
 
