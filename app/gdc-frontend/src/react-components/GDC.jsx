@@ -245,7 +245,7 @@ class LegendItem extends React.PureComponent {
                                 var bbox_center = L.marker(bbox_polygon.getBounds().getCenter(), { icon: icon })
 
                                 // Setting title nicer
-                                result.title = toTitleCase(result.title.replaceAll('_', ' '))
+                                //result.title = toTitleCase(result.title.replaceAll('_', ' '))
 
                                 // Setting date nicer
                                 var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -1001,7 +1001,7 @@ class ResultItem extends React.PureComponent {
                     }
                     else {
                         // Setting title nicer
-                        result.title = toTitleCase(result.title.replaceAll('_', ' '))
+                        //result.title = toTitleCase(result.title.replaceAll('_', ' '))
 
                         // Setting date nicer
                         var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
