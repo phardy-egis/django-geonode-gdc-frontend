@@ -142,10 +142,10 @@ class Legend extends React.Component {
                     <div className="uk-accordion-content uk-text-small">
                         <form>
                             <div className="uk-margin uk-grid-small uk-child-width-auto uk-grid">
-                                <label className="uk-form"><input className="uk-checkbox" type="checkbox" onClick={this.toggleBBOXLayer} defaultChecked={true} />  BBOX</label>
+                                <label className="uk-form"><input className="uk-checkbox" type="checkbox" onClick={this.toggleBBOXLayer} defaultChecked={true} />  Bounding box</label>
                             </div>
                             <div className="uk-margin uk-grid-small uk-child-width-auto uk-grid">
-                                <label className="uk-form"><input className="uk-checkbox" type="checkbox" onClick={this.toggleMarkerLayer} defaultChecked={true} />  Centroids clusters</label>
+                                <label className="uk-form"><input className="uk-checkbox" type="checkbox" onClick={this.toggleMarkerLayer} defaultChecked={true} />  Cluster centroids</label>
                             </div>
                         </form>
                     </div>
