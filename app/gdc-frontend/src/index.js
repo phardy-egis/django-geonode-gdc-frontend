@@ -39,8 +39,9 @@ import {
 }   from './react-components/GDC.jsx'
 
 // IMGs
-import img0png from './assets/img/img0.PNG'
+// import img0png from './assets/img/img0.PNG'
 import img1png from './assets/img/img1.PNG'
+// import img2png from './assets/img/img2.PNG'
 import img3png from './assets/img/img3.PNG'
 import img4png from './assets/img/img4.PNG'
 import img5png from './assets/img/img5.PNG'
@@ -84,7 +85,7 @@ UIkit.use(Icons);
 
 // LEAFLET COMPONENTS
 var map = L.map('map', { attributionControl: true, zoomControl: false })
-
+map._layersMaxZoom = 22
 
 
 // ====================================
@@ -128,7 +129,7 @@ var legendPanelToggle = L.Control.extend({
         container.title = "No cat";
         container.value = "        Legend >   ";
 
-        container.onclick = function () {
+        container.onclick = function (e) {
             togglePanel(map, "right")
         }
 
@@ -150,7 +151,7 @@ var searchPanelToggle = L.Control.extend({
         container.title = "No cat";
         container.value = "   < Search        ";
 
-        container.onclick = function () {
+        container.onclick = function (e) {
             togglePanel(map, "left")
         }
 
@@ -168,82 +169,58 @@ map.addControl(new L.Control.loading());
 
 const apiKey = "AAPKbfe69f931a334900a983c3447e44c14baeeTitMxekf4cvy1stU8zKsWgrCIMsqrzEDsgVdveu52rg3GZ8N_hNBeBO03S6xb";
 
-// Base layer switcher
+// Base layer switcherz
 new L.basemapsSwitcher([
     {
-        layer: esri_vector.vectorBasemapLayer("ArcGIS:LightGray", {
-            apiKey: apiKey
-        }).addTo(map),
-        icon: img0png,
-        name: 'Gray'
+        layer: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 20,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }), //DEFAULT MAP
+        icon: img1png,
+        name: 'OSM Base'
     },
     {
         layer: esri_vector.vectorBasemapLayer("ArcGIS:Imagery:Standard", {
             apiKey: apiKey
-        }),
+        }).addTo(map),
         icon: img5png,
         name: 'Satellite'
     },
     {
-        layer: esri_vector.vectorBasemapLayer("ArcGIS:Topographic:Base", {
-            apiKey: apiKey
+        layer: L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+            maxZoom: 20,
+            attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="https://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
         }),
         icon: img3png,
-        name: 'Topo'
+        name: 'OSM Topo'
     },
-    // {
-    //     layer: L.tileLayer('https://maps.geoapify.com/v1/tile/positron/{z}/{x}/{y}.png?apiKey=2b192eb2767d4af0926ad644aa3dce46', {
-    //         attribution: 'Powered by <a href="https://www.geoapify.com/" target="_blank">Geoapify</a> | <a href="https://openmaptiles.org/" target="_blank">© OpenMapTiles</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap</a> contributors',
-    //         maxZoom: 20,
-    //         id: 'osm-grey'
-    //     }),//.addTo(map), //DEFAULT MAP
-    //     icon: img0png,
-    //     name: 'OSM Grey'
-    // },
-    // {
-    //     layer: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    //         maxZoom: 20,
-    //         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    //     }), //DEFAULT MAP
-    //     icon: img1png,
-    //     name: 'OSM Base'
-    // },
-
-    // {
-    //     layer: L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-    //         maxZoom: 20,
-    //         attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="https://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
-    //     }),
-    //     icon: img3png,
-    //     name: 'OSM Topo'
-    // },
-    // {
-    //     layer: L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-    //         maxZoom: 20,
-    //         subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-    //         attribution: 'Données cartographiques ©2022 Google'
-    //     }),
-    //     icon: img4png,
-    //     name: 'G. Streets'
-    // },
-    // {
-    //     layer: L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
-    //         maxZoom: 20,
-    //         subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-    //         attribution: 'Données cartographiques ©2022 Google'
-    //     }),
-    //     icon: img6png,
-    //     name: 'G. Hybrid'
-    // },
-    // {
-    //     layer: L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
-    //         maxZoom: 20,
-    //         subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-    //         attribution: 'Données cartographiques ©2022 Google'
-    //     }),
-    //     icon: img5png,
-    //     name: 'G. Satellite'
-    // },
+    {
+        layer: L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+            maxZoom: 20,
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+            attribution: 'Données cartographiques ©2022 Google'
+        }),
+        icon: img4png,
+        name: 'G. Streets'
+    },
+    {
+        layer: L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+            maxZoom: 20,
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+            attribution: 'Données cartographiques ©2022 Google'
+        }),
+        icon: img6png,
+        name: 'G. Hybrid'
+    },
+    {
+        layer: L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+            maxZoom: 20,
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+            attribution: 'Données cartographiques ©2022 Google'
+        }),
+        icon: img5png,
+        name: 'G. Satellite'
+    },
 ], { position: 'bottomright' }).addTo(map);
 
 
