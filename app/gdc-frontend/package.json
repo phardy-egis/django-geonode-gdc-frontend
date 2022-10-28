@@ -1,12 +1,14 @@
 {
   "name": "gdc-frontend",
   "version": "0.1.0",
-  "proxy":"http://localhost:8000/",
+  "proxy": "https://geonode.dev.phardy.ovh:8000/",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",
+    "esri-leaflet": "^3.0.8",
+    "esri-leaflet-vector": "^4.0.0",
     "flatpickr": "^4.6.13",
     "jquery": "^3.6.1",
     "leaflet": "^1.7.1",
