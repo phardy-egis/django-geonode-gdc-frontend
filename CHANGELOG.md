@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.3.0](https://github.com/phardy-egis/django-geonode-gdc-frontend/compare/v1.2.1...v1.3.0) (2022-10-28)
+
+
+### Features
+
+* **esri-leaflet:** added esri-leaflet backgrounds ([c76dd6c](https://github.com/phardy-egis/django-geonode-gdc-frontend/commit/c76dd6c99cd79a005fd1e382dfe78ca6c2ffd38b))
+
+
+### Bug Fixes
+
+* **html:** minor fix in html of the main layout ([1e0204e](https://github.com/phardy-egis/django-geonode-gdc-frontend/commit/1e0204eab53e4bfd88aca9f51b0c38470c9dae62))
+* **layer-switcher:** optimization of layer switcher ([92b4bc1](https://github.com/phardy-egis/django-geonode-gdc-frontend/commit/92b4bc164461b142dd621a6d035c75daa4d93d40))
+* **media:** optimized media for compilation ([c0768c1](https://github.com/phardy-egis/django-geonode-gdc-frontend/commit/c0768c151121cd9390c995acf48dc8b28af9117d))
+
 ## [1.2.1](https://github.com/phardy-egis/django-geonode-gdc-frontend/compare/v1.2.0...v1.2.1) (2022-10-21)
 
 
