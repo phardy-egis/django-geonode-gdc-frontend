@@ -171,56 +171,57 @@ const apiKey = "AAPKbfe69f931a334900a983c3447e44c14baeeTitMxekf4cvy1stU8zKsWgrCI
 
 // Base layer switcherz
 new L.basemapsSwitcher([
-    {
-        layer: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 20,
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }), //DEFAULT MAP
-        icon: img1png,
-        name: 'OSM Base'
-    },
+    // {
+    //     layer: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    //         maxZoom: 20,
+    //         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    //     }), //DEFAULT MAP
+    //     icon: img1png,
+    //     name: 'OSM Base'
+    // },
     {
         layer: esri_vector.vectorBasemapLayer("ArcGIS:Imagery:Standard", {
-            apiKey: apiKey
+            apiKey: apiKey,
+            zIndex: -1
         }).addTo(map),
         icon: img5png,
         name: 'Satellite'
     },
-    {
-        layer: L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-            maxZoom: 20,
-            attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="https://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
-        }),
-        icon: img3png,
-        name: 'OSM Topo'
-    },
-    {
-        layer: L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-            maxZoom: 20,
-            subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-            attribution: 'Données cartographiques ©2022 Google'
-        }),
-        icon: img4png,
-        name: 'G. Streets'
-    },
-    {
-        layer: L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
-            maxZoom: 20,
-            subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-            attribution: 'Données cartographiques ©2022 Google'
-        }),
-        icon: img6png,
-        name: 'G. Hybrid'
-    },
-    {
-        layer: L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
-            maxZoom: 20,
-            subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-            attribution: 'Données cartographiques ©2022 Google'
-        }),
-        icon: img5png,
-        name: 'G. Satellite'
-    },
+    // {
+    //     layer: L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+    //         maxZoom: 20,
+    //         attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="https://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+    //     }),
+    //     icon: img3png,
+    //     name: 'OSM Topo'
+    // },
+    // {
+    //     layer: L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+    //         maxZoom: 20,
+    //         subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+    //         attribution: 'Données cartographiques ©2022 Google'
+    //     }),
+    //     icon: img4png,
+    //     name: 'G. Streets'
+    // },
+    // {
+    //     layer: L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+    //         maxZoom: 20,
+    //         subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+    //         attribution: 'Données cartographiques ©2022 Google'
+    //     }),
+    //     icon: img6png,
+    //     name: 'G. Hybrid'
+    // },
+    // {
+    //     layer: L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+    //         maxZoom: 20,
+    //         subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+    //         attribution: 'Données cartographiques ©2022 Google'
+    //     }),
+    //     icon: img5png,
+    //     name: 'G. Satellite'
+    // },
 ], { position: 'bottomright' }).addTo(map);
 
 
