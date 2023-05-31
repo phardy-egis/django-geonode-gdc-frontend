@@ -170,6 +170,15 @@ map.addControl(new L.Control.loading());
 const apiKey = "AAPKbfe69f931a334900a983c3447e44c14baeeTitMxekf4cvy1stU8zKsWgrCIMsqrzEDsgVdveu52rg3GZ8N_hNBeBO03S6xb";
 
 // Base layer switcherz
+var backgroundPane = map.createPane('background');
+backgroundPane.style.zIndex = -400;
+
+const esriBasemap = esri_vector.vectorBasemapLayer("ArcGIS:Imagery:Standard", {
+    apiKey: apiKey,
+    pane: backgroundPane,
+})
+console.log(esriBasemap)
+
 new L.basemapsSwitcher([
     // {
     //     layer: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -180,10 +189,7 @@ new L.basemapsSwitcher([
     //     name: 'OSM Base'
     // },
     {
-        layer: esri_vector.vectorBasemapLayer("ArcGIS:Imagery:Standard", {
-            apiKey: apiKey,
-            zIndex: -1
-        }).addTo(map),
+        layer: esriBasemap.addTo(map),
         icon: img5png,
         name: 'Satellite'
     },

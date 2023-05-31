@@ -135,6 +135,7 @@ export class LayerManager {
             pane: this.layerPane,
         }
         var layerLeaflet = L.tileLayer.wms(this.DOMAIN_NAME_FULL + 'geoserver/ows?', wmsOptions).addTo(this.parentMap);
+        console.log(layerLeaflet)
         layerLeaflet.setOpacity(100)
 
         this.layers[layerKey] = {
