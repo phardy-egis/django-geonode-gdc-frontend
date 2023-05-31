@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/phardy-egis/django-geonode-gdc-frontend/compare/v1.3.0...v1.3.1) (2023-05-31)
+
+
+### Bug Fixes
+
+* esri layers not hiding anymore geonode layer ([ff5f2a7](https://github.com/phardy-egis/django-geonode-gdc-frontend/commit/ff5f2a70efced4b4fa726f27f1af6daaf4031d42))
+
 ## [1.3.0](https://github.com/phardy-egis/django-geonode-gdc-frontend/compare/v1.2.1...v1.3.0) (2022-10-28)
 
 
