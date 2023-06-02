@@ -8,11 +8,11 @@ services:
     environment:
       - NODE_ENV=development
       - WATCHPACK_POLLING=true
-      - REACT_APP_SITEURL=${SITEURL}
+      - REACT_APP_SITEURL=${REACT_APP_SITEURL}
     volumes:
       - ./app:/home/node/app
     expose:
       - "3000"
     ports:
       - "3000:3000"
-    command: "sleep infinity"
+    command: "npm run start"
