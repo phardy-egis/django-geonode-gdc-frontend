@@ -18,16 +18,19 @@ import $ from 'jquery';
 import L from 'leaflet';
 import "leaflet-loading";
 import "leaflet-switch-basemap";
-import * as esri from "esri-leaflet";
+// import * as esri from "esri-leaflet";
 import * as esri_vector from "esri-leaflet-vector";
 import flatpickr from "flatpickr";
 import "leaflet.markercluster";
 import UIkit from 'uikit';
 import Icons from 'uikit/dist/js/uikit-icons';
+import { ResizeObserver } from 'resize-observer';
+
 
 // JS COMPONENTS
 import { togglePanel } from "./js-components/PanelControl.js";
 import { LayerManager, FilterManager } from "./js-components/MapControl.js"
+var debounce = require('debounce');
 
 // JSX COMPONENTS
 import { 
@@ -39,13 +42,7 @@ import {
 }   from './react-components/GDC.jsx'
 
 // IMGs
-// import img0png from './assets/img/img0.PNG'
-import img1png from './assets/img/img1.PNG'
-// import img2png from './assets/img/img2.PNG'
-import img3png from './assets/img/img3.PNG'
-import img4png from './assets/img/img4.PNG'
 import img5png from './assets/img/img5.PNG'
-import img6png from './assets/img/img6.PNG'
 
 // ==================================================================================================================
 // ================================================ MAP LOADING =====================================================
@@ -53,10 +50,10 @@ import img6png from './assets/img/img6.PNG'
 
 // Main page loading spinner
 setTimeout(toggleLoading, 500)
+
 function toggleLoading() {
     $('#preloader').hide();
     $('#component').show();
-    map.invalidateSize()
 }
 
 // Setting target domain name
@@ -84,7 +81,14 @@ UIkit.use(Icons);
 
 
 // LEAFLET COMPONENTS
-var map = L.map('map', { attributionControl: true, zoomControl: false })
+const map = L.map('map', { attributionControl: true, zoomControl: false })
+
+// This listenner triggers map invalidation on div size change
+const ro = new ResizeObserver(function(e){
+    console.log('map resized !')
+});
+ro.observe(document.getElementById('map'));
+
 map._layersMaxZoom = 22
 
 

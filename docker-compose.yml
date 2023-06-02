@@ -5,13 +5,12 @@ services:
     image: "node:16"
     user: "node"
     working_dir: /home/node/app/gdc-frontend
+    command: npm run start
     environment:
       - NODE_ENV=development
       - WATCHPACK_POLLING=true
       - REACT_APP_SITEURL=${REACT_APP_SITEURL}
     volumes:
       - ./app:/home/node/app
-    expose:
-      - "3000"
     ports:
       - "3000:3000"

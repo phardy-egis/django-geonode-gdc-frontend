@@ -815,8 +815,6 @@ class ResultList extends React.Component {
 
         var resultlist_items = []
         var resultlist_title
-        console.log('render')
-
         
         if (typeof this.state.results != 'undefined' && this.state.status != 'loading'){
             // Hidding and emptying bbox layer
