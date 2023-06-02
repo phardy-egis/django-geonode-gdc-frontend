@@ -142,7 +142,7 @@ class Legend extends React.Component {
                     <div className="uk-accordion-content uk-text-small">
                         <form>
                             <div className="uk-margin uk-grid-small uk-child-width-auto uk-grid">
-                                <label className="uk-form"><input className="uk-checkbox" type="checkbox" onClick={this.toggleBBOXLayer} defaultChecked={true} />  Bounding box</label>
+                                <label className="uk-form"><input className="uk-checkbox" type="checkbox" onClick={this.toggleBBOXLayer} defaultChecked={true} />  Bounding boxes</label>
                             </div>
                             <div className="uk-margin uk-grid-small uk-child-width-auto uk-grid">
                                 <label className="uk-form"><input className="uk-checkbox" type="checkbox" onClick={this.toggleMarkerLayer} defaultChecked={true} />  Cluster centroids</label>
@@ -217,77 +217,67 @@ class LegendItem extends React.PureComponent {
             .then(res => res.json())
             .then(
                 (result) => {
-                    // Getting Layer coordinates from WMS servcie
-                    fetch(this.props.domain_src+"capabilities/layer/" + this.props.id + "/")
-                        .then(xml_text => xml_text.text())
-                        .then(
-                            (xml_text) => {
 
-                                var parser = new DOMParser();
-                                var xmlDoc = parser.parseFromString(xml_text, "text/xml");
-                                var coordsXML = xmlDoc.getElementsByTagName("EX_GeographicBoundingBox")[0].children
-                                var bbox_coords_correct = [
-                                    [parseFloat(coordsXML[2].innerHTML), parseFloat(coordsXML[0].innerHTML)],
-                                    [parseFloat(coordsXML[2].innerHTML), parseFloat(coordsXML[1].innerHTML)],
-                                    [parseFloat(coordsXML[3].innerHTML), parseFloat(coordsXML[1].innerHTML)],
-                                    [parseFloat(coordsXML[3].innerHTML), parseFloat(coordsXML[0].innerHTML)],
-                                    [parseFloat(coordsXML[2].innerHTML), parseFloat(coordsXML[0].innerHTML)],
-                                ]
+                    // Reverting coordinates to correct order
+                    var bbox_coords_correct = result.bbox_polygon.coordinates[0]
+                    var bbox_coords_correct = [
+                        [bbox_coords_correct[0][1], bbox_coords_correct[0][0]],
+                        [bbox_coords_correct[1][1], bbox_coords_correct[1][0]],
+                        [bbox_coords_correct[2][1], bbox_coords_correct[2][0]],
+                        [bbox_coords_correct[3][1], bbox_coords_correct[3][0]],
+                        [bbox_coords_correct[4][1], bbox_coords_correct[4][0]],
+                    ]
 
-                                // Setting the layer polygon extent
-                                var bbox_polygon = L.polygon(bbox_coords_correct)
+                    // Setting the layer polygon extent
+                    var bbox_polygon = L.polygon(bbox_coords_correct)
 
-                                // Setting the layer center marker
-                                var icon = L.icon({
-                                    iconSize: [30, 30],
-                                    iconAnchor: [15, 15],
-                                });
-                                var bbox_center = L.marker(bbox_polygon.getBounds().getCenter(), { icon: icon })
-
-                                // Setting title nicer
-                                //result.title = toTitleCase(result.title.replaceAll('_', ' '))
-
-                                // Setting date nicer
-                                var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-                                var date_refactor = new Date(result.date)
-                                result.date = date_refactor.toLocaleDateString("en-US", options)
-
-                                // Getting thumbnail depending on custom thumbnail availability
-                                if (result.curatedthumbnail != null) {
-                                    var thumbnail_url = this.props.domain_src + result.curatedthumbnail.thumbnail_url.toString()
-                                }
-                                else {
-                                    var thumbnail_url = result.thumbnail_url
-                                }
-
-                                // Getting proper legend URL
-                                result.detail_url = this.props.domain_src + result.detail_url.toString()
-
-                                // Loading layer
-                                this.props.mainlayermgr.addMapLayer(result.alternate, this.props.layerid)
-                                
-
-                                // Zoom to layer
-                                this.props.mainlayermgr.parentMap.fitBounds(bbox_polygon.getBounds());
-
-                                // Changing state of react component
-                                this.setState({
-                                    status: 'ready',
-                                    layerData: result,
-                                    bbox: bbox_polygon,
-                                    bbox_center: bbox_center,
-                                    thumbnail_url: thumbnail_url
-                                })
-                            }
-                        )
-                },
-                (error) => {
-                    UIkit.notification('Error fetching data from server to load layer', 'danger');
-                    this.setState({
-                        status: 'error',
-                        error
+                    // Setting the layer center marker
+                    var icon = L.icon({
+                        iconSize: [30, 30],
+                        iconAnchor: [15, 15],
                     });
-                    console.log(error);
+                    var bbox_center = L.marker(bbox_polygon.getBounds().getCenter(), { icon: icon })
+
+                    // Setting title nicer
+                    //result.title = toTitleCase(result.title.replaceAll('_', ' '))
+
+                    // Setting date nicer
+                    var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                    var date_refactor = new Date(result.date)
+                    result.date = date_refactor.toLocaleDateString("en-US", options)
+
+                    // Getting a proper thumbnail url
+                    var thumbnail_url = null
+                    if (result.thumbnail_url != null) {
+                        try {
+                            var thumbnail_url = new URL(result.thumbnail_url.toString())
+                            thumbnail_url = this.props.domain_src + thumbnail_url.pathname.toString().substring(1)
+
+                        } catch (error) {
+                            console.error('Bad URL for thumbnail')
+                        }
+
+                    }
+                    result.thumbnail_url = thumbnail_url
+
+                    // Getting proper legend URL
+                    result.detail_url = this.props.domain_src + result.detail_url.toString()
+
+                    // Loading layer
+                    this.props.mainlayermgr.addMapLayer(result.alternate, this.props.layerid)
+                    
+
+                    // Zoom to layer
+                    this.props.mainlayermgr.parentMap.fitBounds(bbox_polygon.getBounds());
+
+                    // Changing state of react component
+                    this.setState({
+                        status: 'ready',
+                        layerData: result,
+                        bbox: bbox_polygon,
+                        bbox_center: bbox_center,
+                        thumbnail_url: thumbnail_url
+                    })
                 }
             )
     }
@@ -302,16 +292,6 @@ class LegendItem extends React.PureComponent {
         }
 
         if (this.state.status == 'ready') {
-
-            var catList = []
-            // for (var i = 0; i < this.state.layerData.adb_themes.length; i++) {
-            //     if (i == this.state.layerData.adb_themes.length - 1) {
-            //         catList.push(<span key={this.state.layerData.adb_themes[i].code}>{this.state.layerData.adb_themes[i].name} ({this.state.layerData.adb_themes[i].code})</span>)
-            //     }
-            //     else {
-            //         catList.push(<span key={this.state.layerData.adb_themes[i].code}>{this.state.layerData.adb_themes[i].name} ({this.state.layerData.adb_themes[i].code}),</span>)
-            //     }
-            // }
 
             return (
                 <li id={"legend-item-" + this.props.layerid} layername={this.props.layerid} className="uk-open uk-padding-small uk-background-muted">
@@ -335,14 +315,15 @@ class LegendItem extends React.PureComponent {
                                         <ul className="uk-iconnav">
                                             <li><a href={this.state.layerData.detail_url} data-uk-icon="icon: cloud-download" data-uk-tooltip="Download layer" target="_blank" rel="noreferrer noopener"></a></li>
                                         </ul>
-                                        <p><span className="uk-text-bold">Categories: </span>{catList}</p>
+                                        <p><span className="uk-text-bold">Categories: </span>{this.state.layerData.category}</p>
+                                        <p><span className="uk-text-bold">Regions: </span>{this.state.layerData.regions.join(', ')}</p>
                                         <p><span className="uk-text-bold uk-text-capitalize"> {this.state.layerData.date_type} date: </span> {this.state.layerData.date}</p>
                                         <p><span className="uk-text-bold">Source: </span>{this.state.layerData.raw_supplemental_information}</p>
                                         <p><span className="uk-text-bold">Description: </span>{this.state.layerData.raw_abstract}</p>
                                         <button className="uk-modal-close-default" type="button" data-uk-close></button>
                                     </div>
                                     <div className="uk-width-1-3@m uk-flex-first">
-                                        <ImgPlus key={uuidv4()} src={this.state.thumbnail_url.replace('http://', window.location.protocol + '://').replace('https://', window.location.protocol + '://')} width="500" height="500" alt="Layer thumbnail"></ImgPlus>
+                                        <ImgPlus key={uuidv4()} src={this.state.thumbnail_url} width="500" height="500" alt="Layer thumbnail"></ImgPlus>
                                     </div>
                                 </div>
                             </div>
@@ -718,7 +699,7 @@ class SelectMulitpleListItem extends React.Component {
 
         return (
             <div className="uk-padding-small uk-padding-remove-top uk-padding-remove-left" >
-                <div className="uk-margin uk-grid-small uk-child-width-auto uk-grid" data-uk-tooltip={this.props.name + " (" + this.props.code + ")"}>
+                <div className="uk-margin uk-grid-small uk-child-width-auto uk-grid" data-uk-tooltip={this.props.name}>
                     <label><input onClick={this.handleClick} className="uk-checkbox" type="checkbox"></input>&nbsp; {itemDom}</label>
                 </div>
                 
@@ -888,7 +869,7 @@ class ResultList extends React.Component {
             }
         }
         else{
-            resultlist_title = <p className="uk-text-default uk-text-middle uk-margin-small-top uk-margin-small-bottom"><span data-uk-spinner uk-spinner="ratio: 0.8" className="uk-padding-remove"></span> &nbsp; Loading results...</p>
+            resultlist_title = <p className="uk-text-default uk-text-middle uk-margin-small-top uk-margin-small-bottom">&nbsp; 0 Results found with the current filters.</p>
         }
 
         return (
@@ -992,11 +973,21 @@ class ResultItem extends React.PureComponent {
                 (result) => {
                     if (result.hasOwnProperty('success')) {
                         if (!result.success) {
-                            this.setState({
-                                status: 'hidden',
-                                layerData: {}
-                            })
-
+                            if (result.code == 'not_authenticated') {
+                                this.setState({
+                                    status: 'nologin',
+                                    layerData: {}
+                                })
+                            }
+                            else {
+                                this.setState({
+                                    status: 'noperm',
+                                    layerData: {}
+                                })
+                            }
+                        }
+                        else {
+                            console.log('unsupported case')
                         }
                     }
                     else {
@@ -1151,7 +1142,8 @@ class ResultItem extends React.PureComponent {
                                     <ul className="uk-iconnav">
                                         <li><a href={this.state.layerData.detail_url} data-uk-icon="icon: cloud-download" data-uk-tooltip="Download layer" target="_blank" rel="noreferrer noopener"></a></li>
                                     </ul>
-                                    <p><span className="uk-text-bold">Categories: </span>{catList}</p>
+                                    <p><span className="uk-text-bold">Categories: </span>{this.state.layerData.category}</p>
+                                    <p><span className="uk-text-bold">Regions: </span>{this.state.layerData.regions.join(', ')}</p>
                                     <p><span className="uk-text-bold uk-text-capitalize"> {this.state.layerData.date_type} date: </span> {this.state.layerData.date}</p>
                                     <p><span className="uk-text-bold">Source: </span>{this.state.layerData.raw_supplemental_information}</p>
                                     <p><span className="uk-text-bold">Description: </span>{this.state.layerData.raw_abstract}</p>
@@ -1164,12 +1156,22 @@ class ResultItem extends React.PureComponent {
                 </div>
             )
         }
-        else if (this.state.status == 'hidden'){
+        else if (this.state.status == 'nologin'){
             var domToRender = (
                 <div ref={this.resultItemRef} id={"resultitem_" + this.props.pk} key={this.props.pk} className=" uk-animation-fade uk-margin-small-bottom uk-padding-small uk-card uk-card-body gdc-custom-border" onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave} >
                     <p className="uk-margin-small uk-text-small uk-text-bolder uk-text-muted">Data not visible.</p>
                     <div className="uk-padding-remove uk-grid-small uk-text-muted" data-uk-grid>
-                        <p className="uk-text-justify uk-text-small uk-text-muted">Insufficient permissions to access this dataset.</p>
+                        <p className="uk-text-justify uk-text-small uk-text-muted">Insufficient permissions to access this dataset. Please <a href={this.props.domain_src +'account/login/?next=/gdc/'}>login</a>.</p>
+                    </div>
+                </div>
+            )
+        }
+        else if (this.state.status == 'noperm') {
+            var domToRender = (
+                <div ref={this.resultItemRef} id={"resultitem_" + this.props.pk} key={this.props.pk} className=" uk-animation-fade uk-margin-small-bottom uk-padding-small uk-card uk-card-body gdc-custom-border" onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave} >
+                    <p className="uk-margin-small uk-text-small uk-text-bolder uk-text-muted">Data not visible.</p>
+                    <div className="uk-padding-remove uk-grid-small uk-text-muted" data-uk-grid>
+                        <p className="uk-text-justify uk-text-small uk-text-muted">Insufficient permissions to access this dataset. Contact admin to get permissions.</p>
                     </div>
 
                 </div>

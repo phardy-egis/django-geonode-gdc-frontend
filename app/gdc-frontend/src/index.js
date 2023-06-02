@@ -18,7 +18,7 @@ import $ from 'jquery';
 import L from 'leaflet';
 import "leaflet-loading";
 import "leaflet-switch-basemap";
-import * as esri from "esri-leaflet";
+//import * as esri from "esri-leaflet";
 import * as esri_vector from "esri-leaflet-vector";
 import flatpickr from "flatpickr";
 import "leaflet.markercluster";
@@ -39,11 +39,11 @@ import {
 }   from './react-components/GDC.jsx'
 
 // IMGs
-// import img0png from './assets/img/img0.PNG'
+import img0png from './assets/img/img0.PNG'
 import img1png from './assets/img/img1.PNG'
-// import img2png from './assets/img/img2.PNG'
+//import img2png from './assets/img/img2.PNG'
 import img3png from './assets/img/img3.PNG'
-import img4png from './assets/img/img4.PNG'
+//import img4png from './assets/img/img4.PNG'
 import img5png from './assets/img/img5.PNG'
 import img6png from './assets/img/img6.PNG'
 
@@ -193,34 +193,7 @@ new L.basemapsSwitcher([
         }),
         icon: img3png,
         name: 'OSM Topo'
-    },
-    {
-        layer: L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-            maxZoom: 20,
-            subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-            attribution: 'Données cartographiques ©2022 Google'
-        }),
-        icon: img4png,
-        name: 'G. Streets'
-    },
-    {
-        layer: L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
-            maxZoom: 20,
-            subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-            attribution: 'Données cartographiques ©2022 Google'
-        }),
-        icon: img6png,
-        name: 'G. Hybrid'
-    },
-    {
-        layer: L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
-            maxZoom: 20,
-            subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-            attribution: 'Données cartographiques ©2022 Google'
-        }),
-        icon: img5png,
-        name: 'G. Satellite'
-    },
+    }
 ], { position: 'bottomright' }).addTo(map);
 
 

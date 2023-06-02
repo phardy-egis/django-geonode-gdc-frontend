@@ -101,6 +101,8 @@ export class LayerManager {
         this.parentMap = parentMap
         this.layers = {}
         this.DOMAIN_NAME_FULL = DOMAIN_NAME_FULL
+        this.wmsPane = parentMap.createPane('wmsPane');
+        this.wmsPane.style.zIndex = 250;
     }
 
 
@@ -129,6 +131,7 @@ export class LayerManager {
             transparent: true,
             format: 'image/png',
             maxZoom: 20,
+            pane: "overlayPane",
         }
         var layerLeaflet = L.tileLayer.wms(this.DOMAIN_NAME_FULL + 'geoserver/ows?', wmsOptions).addTo(this.parentMap);
         layerLeaflet.setOpacity(100)
