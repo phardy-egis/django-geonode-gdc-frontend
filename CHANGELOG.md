@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.3.2](https://github.com/phardy-egis/django-geonode-gdc-frontend/compare/v1.3.1...v1.3.2) (2023-06-06)
+
+
+### Bug Fixes
+
+* added debounce and invalidate size on map ([bc01d4f](https://github.com/phardy-egis/django-geonode-gdc-frontend/commit/bc01d4f96a36fdd93dc2760a3b445bd914c98041))
+* bbox polygon loading for LegendItems ([55d97c3](https://github.com/phardy-egis/django-geonode-gdc-frontend/commit/55d97c35aa9735cfffb4ed7bf7686eab66d80c92))
+* localchanges ([8ed3f4b](https://github.com/phardy-egis/django-geonode-gdc-frontend/commit/8ed3f4bf9b76f2594f1288886912cf33ec633ead))
+* map size invalidation not working (reverted to old settings) ([55d97c3](https://github.com/phardy-egis/django-geonode-gdc-frontend/commit/55d97c35aa9735cfffb4ed7bf7686eab66d80c92))
+* removal of geonode deprecated endpoints ([55d97c3](https://github.com/phardy-egis/django-geonode-gdc-frontend/commit/55d97c35aa9735cfffb4ed7bf7686eab66d80c92))
+* removal of prop code ([1e01046](https://github.com/phardy-egis/django-geonode-gdc-frontend/commit/1e010468959bb9c94184e844eda1c07a84f0de29))
+
 ## [1.3.1](https://github.com/phardy-egis/django-geonode-gdc-frontend/compare/v1.3.0...v1.3.1) (2023-05-31)
 
 
