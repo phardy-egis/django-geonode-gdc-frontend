@@ -698,7 +698,7 @@ class SelectMulitpleListItem extends React.Component {
 
         return (
             <div className="uk-padding-small uk-padding-remove-top uk-padding-remove-left" >
-                <div className="uk-margin uk-grid-small uk-child-width-auto uk-grid" data-uk-tooltip={this.props.name + " (" + this.props.code + ")"}>
+                <div className="uk-margin uk-grid-small uk-child-width-auto uk-grid" data-uk-tooltip={this.props.name}>
                     <label><input onClick={this.handleClick} className="uk-checkbox" type="checkbox"></input>&nbsp; {itemDom}</label>
                 </div>
                 
