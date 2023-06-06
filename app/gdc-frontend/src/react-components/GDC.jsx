@@ -9,7 +9,7 @@ UIkit.use(Icons);
 
 // Import JS custom functions
 import { openLegendPanel} from "../js-components/PanelControl.js"
-import { uuidv4, toTitleCase, elmtIsVisible } from "../js-components/Utilities.js"
+import { uuidv4, elmtIsVisible } from "../js-components/Utilities.js"
 
 // Import custom images
 import layerCentroidIcon from '../assets/img/layer_position_icon_blue.png'
@@ -80,11 +80,12 @@ class Legend extends React.Component {
         UIkit.util.on('#legend_main_container', 'moved', reloadOnMove);
     }
 
-    addLegendItem(geonodeLayerId){
+    addLegendItem(geonodeLayerId, bbox){
         var tempLayers = this.state.layers;
         var item = {
             key: this.state.key,
             id: geonodeLayerId,
+            bbox: bbox,
         }
         
         tempLayers.push(item)
@@ -131,7 +132,7 @@ class Legend extends React.Component {
         var legendItems = []
         if (this.state.layers !== []){
             for (const layer of this.state.layers) {
-                legendItems.push(<LegendItem domain_src={this.props.domain_src} mainlayermgr={this.props.mainlayermgr} key={layer.key} layerid={layer.key} id={layer.id}></LegendItem>)
+                legendItems.push(<LegendItem domain_src={this.props.domain_src} mainlayermgr={this.props.mainlayermgr} key={layer.key} layerid={layer.key} id={layer.id} bbox={layer.bbox}></LegendItem>)
                 legendItems = legendItems.reverse()
             }
         }
@@ -156,7 +157,7 @@ class Legend extends React.Component {
     }
 }
 
-// LEGEND ITEMS
+// LEGEND ITEM
 class LegendItem extends React.PureComponent {
 
     constructor(props) {
@@ -213,73 +214,55 @@ class LegendItem extends React.PureComponent {
     }
 
     componentDidMount() {
+        const bbox = this.props.bbox
         fetch(this.props.domain_src + "gdc/api/resource_detail/" + this.props.id + "/", { importance: "low" })
             .then(res => res.json())
             .then(
-                (result) => {
-                    // Getting Layer coordinates from WMS servcie
-                    fetch(this.props.domain_src+"capabilities/layer/" + this.props.id + "/")
-                        .then(xml_text => xml_text.text())
-                        .then(
-                            (xml_text) => {
+                (result) => {                    
+                    // Setting the layer polygon extent
+                    var bbox_polygon = bbox
 
-                                var parser = new DOMParser();
-                                var xmlDoc = parser.parseFromString(xml_text, "text/xml");
-                                var coordsXML = xmlDoc.getElementsByTagName("EX_GeographicBoundingBox")[0].children
-                                var bbox_coords_correct = [
-                                    [parseFloat(coordsXML[2].innerHTML), parseFloat(coordsXML[0].innerHTML)],
-                                    [parseFloat(coordsXML[2].innerHTML), parseFloat(coordsXML[1].innerHTML)],
-                                    [parseFloat(coordsXML[3].innerHTML), parseFloat(coordsXML[1].innerHTML)],
-                                    [parseFloat(coordsXML[3].innerHTML), parseFloat(coordsXML[0].innerHTML)],
-                                    [parseFloat(coordsXML[2].innerHTML), parseFloat(coordsXML[0].innerHTML)],
-                                ]
+                    // Setting the layer center marker
+                    var icon = L.icon({
+                        iconSize: [30, 30],
+                        iconAnchor: [15, 15],
+                    });
+                    var bbox_center = L.marker(bbox_polygon.getBounds().getCenter(), { icon: icon })
 
-                                // Setting the layer polygon extent
-                                var bbox_polygon = L.polygon(bbox_coords_correct)
+                    // Setting title nicer
+                    //result.title = toTitleCase(result.title.replaceAll('_', ' '))
 
-                                // Setting the layer center marker
-                                var icon = L.icon({
-                                    iconSize: [30, 30],
-                                    iconAnchor: [15, 15],
-                                });
-                                var bbox_center = L.marker(bbox_polygon.getBounds().getCenter(), { icon: icon })
+                    // Setting date nicer
+                    var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                    var date_refactor = new Date(result.date)
+                    result.date = date_refactor.toLocaleDateString("en-US", options)
 
-                                // Setting title nicer
-                                //result.title = toTitleCase(result.title.replaceAll('_', ' '))
+                    // Getting thumbnail depending on custom thumbnail availability
+                    if (result.curatedthumbnail != null) {
+                        var thumbnail_url = this.props.domain_src + result.curatedthumbnail.thumbnail_url.toString()
+                    }
+                    else {
+                        var thumbnail_url = result.thumbnail_url
+                    }
 
-                                // Setting date nicer
-                                var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-                                var date_refactor = new Date(result.date)
-                                result.date = date_refactor.toLocaleDateString("en-US", options)
+                    // Getting proper legend URL
+                    result.detail_url = this.props.domain_src + result.detail_url.toString()
 
-                                // Getting thumbnail depending on custom thumbnail availability
-                                if (result.curatedthumbnail != null) {
-                                    var thumbnail_url = this.props.domain_src + result.curatedthumbnail.thumbnail_url.toString()
-                                }
-                                else {
-                                    var thumbnail_url = result.thumbnail_url
-                                }
+                    // Loading layer
+                    this.props.mainlayermgr.addMapLayer(result.alternate, this.props.layerid)
 
-                                // Getting proper legend URL
-                                result.detail_url = this.props.domain_src + result.detail_url.toString()
 
-                                // Loading layer
-                                this.props.mainlayermgr.addMapLayer(result.alternate, this.props.layerid)
-                                
+                    // Zoom to layer
+                    this.props.mainlayermgr.parentMap.fitBounds(bbox_polygon.getBounds());
 
-                                // Zoom to layer
-                                this.props.mainlayermgr.parentMap.fitBounds(bbox_polygon.getBounds());
-
-                                // Changing state of react component
-                                this.setState({
-                                    status: 'ready',
-                                    layerData: result,
-                                    bbox: bbox_polygon,
-                                    bbox_center: bbox_center,
-                                    thumbnail_url: thumbnail_url
-                                })
-                            }
-                        )
+                    // Changing state of react component
+                    this.setState({
+                        status: 'ready',
+                        layerData: result,
+                        bbox: bbox_polygon,
+                        bbox_center: bbox_center,
+                        thumbnail_url: thumbnail_url
+                    })
                 },
                 (error) => {
                     UIkit.notification('Error fetching data from server to load layer', 'danger');
@@ -287,7 +270,6 @@ class LegendItem extends React.PureComponent {
                         status: 'error',
                         error
                     });
-                    console.log(error);
                 }
             )
     }
@@ -544,7 +526,6 @@ class SelectList extends React.Component {
                         status: 'error',
                         error
                     });
-                    console.log(error);
                 }
             )
     }
@@ -616,7 +597,6 @@ class SelectMultipleList extends React.Component {
                         status: 'error',
                         error
                     });
-                    console.log(error);
                 }
             )
     }
@@ -802,7 +782,6 @@ class ResultList extends React.Component {
                         status: 'error',
                         error
                     });
-                    console.log(error)
                 }
             )
     }
@@ -865,7 +844,7 @@ class ResultList extends React.Component {
                     this.props.marker_layer.addLayer(geojsoncenterfeature)
 
                     resultlist_items.push(
-                        <ResultItem key={feature.properties.pk} pk={feature.properties.pk} coords={feature.geometry.coordinates} domain_src={this.props.domain_src} target_map={this.props.target_map} marker_layer={this.props.marker_layer} target_legend={this.props.target_legend} bbox_layer={this.props.bbox_layer}></ResultItem>
+                        <ResultItem key={feature.properties.pk} pk={feature.properties.pk} bbox={geojsonbboxfeature} domain_src={this.props.domain_src} target_map={this.props.target_map} marker_layer={this.props.marker_layer} target_legend={this.props.target_legend} bbox_layer={this.props.bbox_layer}></ResultItem>
                     )
                 }
                 else {
@@ -960,6 +939,7 @@ class ResultItem extends React.PureComponent {
         this.handleMouseEnter = this.handleMouseEnter.bind(this);
         this.handleMouseLeave = this.handleMouseLeave.bind(this);
         this.handleEnterViewport = this.handleEnterViewport.bind(this);
+        this.fetchResultsDetails = this.fetchResultsDetails.bind(this);
         this.resultItemRef = React.createRef();
         this.resultDomContainer = document.querySelector('#resultListScrollArea');
         this.n_loads = 0 
@@ -974,115 +954,115 @@ class ResultItem extends React.PureComponent {
             rootMargin: '100%',
             threshold: 0.5
         }     
-        let observer = new IntersectionObserver(this.handleEnterViewport, options)
+        let observer = new IntersectionObserver(this.fetchResultsDetails, options)
         observer.observe(this.resultItemRef.current)
 
-         // At first result list generation, we force item to get loaded it he is visible
+         // At first result list generation, we force item to get loaded if he is visible
         if (elmtIsVisible(this.resultItemRef.current, this.resultDomContainer)) {
-            this.handleEnterViewport()
+            this.fetchResultsDetails()
         }
 
     }
 
-    handleEnterViewport(){
-        if (!this.state.layerDataLoaded && this.n_loads > 0) {
-            fetch(this.props.domain_src + "gdc/api/resource_detail/" + this.props.pk + "/", { importance: "low" }).then(res => res.json()).then(
-                (result) => {
-                    if (result.hasOwnProperty('success')) {
-                        if (!result.success) {
-                            this.setState({
-                                status: 'hidden',
-                                layerData: {}
-                            })
+    fetchResultsDetails() {
+        var bbox = this.props.bbox
 
+        fetch(this.props.domain_src + "gdc/api/resource_detail/" + this.props.pk + "/", { importance: "low" }).then(res => res.json()).then(
+            (result) => {
+                if (result.hasOwnProperty('success')) {
+                    if (!result.success) {
+                        this.setState({
+                            status: 'hidden',
+                            layerData: {}
+                        })
+
+                    }
+                }
+                else {
+                    // Setting title nicer
+                    //result.title = toTitleCase(result.title.replaceAll('_', ' '))
+
+                    // Setting date nicer
+                    var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                    var date_refactor = new Date(result.date)
+                    result.date = date_refactor.toLocaleDateString("en-US", options)
+
+                    // Changing thumbnail URL
+                    var thumbnail_url = null
+                    if (result.thumbnail_url != null) {
+                        try {
+                            var thumbnail_url = new URL(result.thumbnail_url.toString())
+                            thumbnail_url = this.props.domain_src + thumbnail_url.pathname.toString().substring(1)
+
+                        } catch (error) {
+                            console.error('Bad URL for thumbnail')
                         }
+
+                    }
+                    result.thumbnail_url = thumbnail_url
+
+                    // Setting bbox coords
+                    if (bbox) {
+
+                        // Setting the layer polygon extent (this shows on result hover)
+                        // Red (on hover layer)
+                        const bbox_polygon_red = L.geoJSON(bbox.toGeoJSON());
+                        bbox_polygon_red.setStyle({
+                            color: "red",
+                            opacity: 1,
+                            weight: 1,
+                            fillColor: "red",
+                            fillOpacity: 0.3,
+                        });
+
+                        // Setting the layer center marker (this shows on layer hover)
+                        // Red (on hover layer)
+                        var icon_red = L.icon({
+                            iconUrl: layerCentroidIconRed,
+                            iconSize: [40, 40],
+                            iconAnchor: [20, 20],
+                        });
+                        var bbox_center_red = L.marker(bbox_polygon_red.getBounds().getCenter(), { icon: icon_red })
+
+                        // Adding layer polygon to map
+                        this.setState({
+                            status: 'ready',
+                            layerData: result,
+                            layerDataLoaded: true,
+                            bbox_polygon_red: bbox_polygon_red,
+                            bbox_center_red: bbox_center_red,
+                            thumbnail_url: thumbnail_url
+
+                        })
                     }
                     else {
-                        // Setting title nicer
-                        //result.title = toTitleCase(result.title.replaceAll('_', ' '))
+                        // Adding layer polygon to map
+                        this.setState({
+                            status: 'ready',
+                            layerData: result,
+                            layerDataLoaded: true,
+                            bbox_polygon_red: null,
+                            bbox_center_red: null,
+                            thumbnail_url: thumbnail_url
 
-                        // Setting date nicer
-                        var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-                        var date_refactor = new Date(result.date)
-                        result.date = date_refactor.toLocaleDateString("en-US", options)
-
-                        // Changing thumbnail URL
-                        var thumbnail_url = null
-                        if (result.thumbnail_url != null) {
-                            try {
-                                var thumbnail_url = new URL(result.thumbnail_url.toString())
-                                thumbnail_url = this.props.domain_src + thumbnail_url.pathname.toString().substring(1)
-
-                            } catch (error) {
-                                console.error('Bad URL for thumbnail')
-                            }
-
-                        }
-                        result.thumbnail_url = thumbnail_url
-
-                        // Setting bbox coords
-                        var bbox_coords_correct = this.props.coords
-                        if (bbox_coords_correct != null) {
-                            for (var i = 0; i < bbox_coords_correct.length; i++) {
-                                var coords_old = bbox_coords_correct[i]
-                                var coords_new = [coords_old[1], coords_old[0]]
-                                bbox_coords_correct[i] = coords_new
-                            }
-
-                            // Setting the layer polygon extent (this shows on result hover)
-                            // Red (on hover layer)
-                            var bbox_polygon_red = L.polygon(bbox_coords_correct)
-                            bbox_polygon_red.setStyle({
-                                color: "red",
-                                opacity: 1,
-                                weight: 1,
-                                fillColor: "red",
-                                fillOpacity: 0.3,
-                            });
-
-                            // Setting the layer center marker (this shows on layer hover)
-                            // Red (on hover layer)
-                            var icon_red = L.icon({
-                                iconUrl: layerCentroidIconRed,
-                                iconSize: [40, 40],
-                                iconAnchor: [20, 20],
-                            });
-                            var bbox_center_red = L.marker(bbox_polygon_red.getBounds().getCenter(), { icon: icon_red })
-
-                            // Adding layer polygon to map
-                            this.setState({
-                                status: 'ready',
-                                layerData: result,
-                                layerDataLoaded: true,
-                                bbox_polygon_red: bbox_polygon_red,
-                                bbox_center_red: bbox_center_red,
-                                thumbnail_url: thumbnail_url
-
-                            })
-                        }
-                        else {
-                            // Adding layer polygon to map
-                            this.setState({
-                                status: 'ready',
-                                layerData: result,
-                                layerDataLoaded: true,
-                                bbox_polygon_red: null,
-                                bbox_center_red: null,
-                                thumbnail_url: thumbnail_url
-
-                            })
-                        }
+                        })
                     }
-                },
-                (error) => {
-                    UIkit.notification('Error fetching data for dataset [pk:' + this.props.pk + ']', 'danger');
-                    this.setState({
-                        status: 'error',
-                        error
-                    });
-                    console.log(error);
                 }
-            )
+            },
+            (error) => {
+                UIkit.notification('Error fetching data for dataset [pk:' + this.props.pk + ']', 'danger');
+                this.setState({
+                    status: 'error',
+                    error
+                });
+            }
+        )
+        
+    }
+
+    handleEnterViewport(){
+        if (!this.state.layerDataLoaded && this.n_loads > 0) {
+            setTimeout(this.fetchResultsDetails, 1000)
         }
         if(this.n_loads < 1){
             this.n_loads += 1
@@ -1091,13 +1071,12 @@ class ResultItem extends React.PureComponent {
     
     handleLayerAdd(){
         // Add layer to legend (legend component will handle layer addition to map)
-        this.props.target_legend.addLegendItem(this.props.pk)
+        this.props.target_legend.addLegendItem(this.props.pk, this.props.bbox)
         openLegendPanel(this.props.target_map)
     }
 
     handleMouseEnter() {
-        // Update bbox colors to red
-
+        // Displaying a red polygon
         if (this.state.bbox_polygon_red != null) {
             this.state.bbox_polygon_red.addTo(this.props.target_map);
             this.state.bbox_center_red.addTo(this.props.target_map);
@@ -1105,15 +1084,20 @@ class ResultItem extends React.PureComponent {
     }
 
     handleMouseLeave(){
-        // Update bbox colors to blue
+        // Removing the red polygon on the map
         if (this.state.bbox_polygon_red != null){
             this.state.bbox_polygon_red.remove()
             this.state.bbox_center_red.remove();
         }
-
-        //this.state.bbox_center.remove()
     }
 
+    componentWillUnmount(){
+        // Removing the red polygon on the map
+        if (this.state.bbox_polygon_red != null) {
+            this.state.bbox_polygon_red.remove()
+            this.state.bbox_center_red.remove();
+        }
+    }
 
     render() {        
         if (this.state.status == 'ready') {

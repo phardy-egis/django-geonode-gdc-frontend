@@ -18,8 +18,7 @@ import $ from 'jquery';
 import L from 'leaflet';
 import "leaflet-loading";
 import "leaflet-switch-basemap";
-// import * as esri from "esri-leaflet";
-import * as esri_vector from "esri-leaflet-vector";
+import { vectorBasemapLayer } from "esri-leaflet-vector";
 import flatpickr from "flatpickr";
 import "leaflet.markercluster";
 import UIkit from 'uikit';
@@ -30,7 +29,6 @@ import { ResizeObserver } from 'resize-observer';
 // JS COMPONENTS
 import { togglePanel } from "./js-components/PanelControl.js";
 import { LayerManager, FilterManager } from "./js-components/MapControl.js"
-var debounce = require('debounce');
 
 // JSX COMPONENTS
 import { 
@@ -43,23 +41,47 @@ import {
 
 // IMGs
 import img5png from './assets/img/img5.PNG'
+import { quoteUrl } from './js-components/Utilities';
 
 // ==================================================================================================================
 // ================================================ MAP LOADING =====================================================
 // ==================================================================================================================
 
-// Main page loading spinner
-setTimeout(toggleLoading, 500)
-
-function toggleLoading() {
-    $('#preloader').hide();
-    $('#component').show();
-}
+// LEAFLET COMPONENTS
+const map = L.map('map', { attributionControl: true, zoomControl: false })
 
 // Setting target domain name
 // const queryParams = new URLSearchParams(window.location.search);
 // const DOMAIN_NAME_FULL = queryParams.get('host');
 const DOMAIN_NAME_FULL = process.env.REACT_APP_SITEURL;
+
+// This function controls the end of page loading
+async function toggleLoading() {
+
+    // Fetching user details custom endpiont
+    const response = await fetch(DOMAIN_NAME_FULL +'/userdetails/');
+    if(response.status == 200){
+        // If user is authenticated (response code 200)
+
+        // We make sure that user is authenticated against Geoserver via oauth2 endpoint
+        await fetch(DOMAIN_NAME_FULL + '/geoserver/web/j_spring_oauth2_geonode_login');
+        
+        
+        // We show the app
+        $('#preloader').hide();
+        $('#component').show();
+        
+        // This listenner triggers map invalidation on div size change
+        await map.invalidateSize()
+    }
+    else {
+        // If user is NOT authenticated, a redirection to the customlogin page is done
+        document.location.href = DOMAIN_NAME_FULL + '/customlogin/?next=' + quoteUrl(window.location.href)
+    }
+}
+
+// Main page loading spinner
+setTimeout(toggleLoading, 500)
 
 // Preventing form submission
 $(document).ready(function () {
@@ -79,15 +101,6 @@ UIkit.use(Icons);
 // ================================================ LEAFLET MAP SETTINGS ============================================
 // ==================================================================================================================
 
-
-// LEAFLET COMPONENTS
-const map = L.map('map', { attributionControl: true, zoomControl: false })
-
-// This listenner triggers map invalidation on div size change
-const ro = new ResizeObserver(function(e){
-    console.log('map resized !')
-});
-ro.observe(document.getElementById('map'));
 
 map._layersMaxZoom = 22
 
@@ -177,12 +190,10 @@ const apiKey = "AAPKbfe69f931a334900a983c3447e44c14baeeTitMxekf4cvy1stU8zKsWgrCI
 var backgroundPane = map.createPane('background');
 backgroundPane.style.zIndex = -400;
 
-const esriBasemap = esri_vector.vectorBasemapLayer("ArcGIS:Imagery:Standard", {
+const esriBasemap = vectorBasemapLayer("ArcGIS:Imagery:Standard", {
     apiKey: apiKey,
     pane: backgroundPane,
 })
-console.log(esriBasemap)
-
 new L.basemapsSwitcher([
     // {
     //     layer: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

@@ -5,7 +5,6 @@ services:
     image: "node:16"
     user: "node"
     working_dir: /home/node/app/gdc-frontend
-    command: npm run start
     environment:
       - NODE_ENV=development
       - WATCHPACK_POLLING=true

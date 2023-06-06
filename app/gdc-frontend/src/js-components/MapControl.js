@@ -9,6 +9,7 @@ import $ from 'jquery';
 import UIkit from 'uikit';
 import Icons from 'uikit/dist/js/uikit-icons';
 UIkit.use(Icons);
+import {debounce} from 'debounce';
 
 // =========================================================================================================================
 // ================================================ FILTER MANAGER =========================================================
@@ -83,7 +84,8 @@ export class FilterManager {
 
     applyFilters() {
         if (this.mainResultList != null){
-            this.mainResultList.refreshResults()
+            var refreshFunction = this.mainResultList.refreshResults()
+            debounce(refreshFunction, 500)
         }
     }
 
@@ -135,7 +137,6 @@ export class LayerManager {
             pane: this.layerPane,
         }
         var layerLeaflet = L.tileLayer.wms(this.DOMAIN_NAME_FULL + 'geoserver/ows?', wmsOptions).addTo(this.parentMap);
-        console.log(layerLeaflet)
         layerLeaflet.setOpacity(100)
 
         this.layers[layerKey] = {
