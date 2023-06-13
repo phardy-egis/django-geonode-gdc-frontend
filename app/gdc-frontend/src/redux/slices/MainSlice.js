@@ -50,8 +50,14 @@ const mainSlice = createSlice({
             state.filters = [...filtered, { key: 'date__gte', value: action.payload }]
             console.log(state.filters)
         },
+
+        setBBOXFilter: (state, action) => {
+            const filtered = state.filters.filter(filter => (filter.key !== 'bbox'))
+            state.filters = [...filtered, { key: 'bbox', value: action.payload }]
+            console.log(state.filters)
+        },
     }
 })
 
 export default mainSlice
-export const { setSearchFilter, setRegionFilter, toggleSpatialExtentFilter, setCategoryFilter, setStartDateFilter, setEndDateFilter  } = mainSlice.actions
+export const { setSearchFilter, setRegionFilter, toggleSpatialExtentFilter, setCategoryFilter, setStartDateFilter, setEndDateFilter, setBBOXFilter  } = mainSlice.actions
