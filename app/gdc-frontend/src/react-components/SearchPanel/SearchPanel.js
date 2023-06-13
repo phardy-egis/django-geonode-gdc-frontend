@@ -10,9 +10,19 @@ UIkit.use(Icons);
 import IconCheckBox from "./IconCheckBox";
 import ResultItem from "./ResultItem";
 import RegionFilter from "./RegionFilter";
-import FetchWrapper from "../Utils/customFetch";
+import FetchWrapper, { PaginatedDataFetcher } from "../Utils/customFetch";
+import { useSelector, useDispatch, shallowEqual } from 'react-redux'
+import { getSearchParams } from "../../redux/selectors/MainSliceSelectors";
+import { setSearchFilter } from "../../redux/slices/MainSlice";
+import debounce from 'lodash/debounce';
+
 
 export default function SearchPanel(props) {
+
+    // STATE MANAGEMENT
+
+    // Allow redux dispatch function to be called
+    const dispatch = useDispatch()
 
     // Managing categories list
     const [categories, setCategories] = useState([])
@@ -26,8 +36,66 @@ export default function SearchPanel(props) {
             .catch(function (error) {
                 UIkit.notification(`Error. ${error}`, { status: 'danger' })
             });
-    })
+    }, [])
 
+    // Managing result list
+    const searchParams = useSelector(state => getSearchParams(state))
+    const [resultsReady, setResultsReady] = useState(true)
+    const [loadingProgress, setLoadingProgress] = useState(false)
+    const [results, setResults] = useState([])
+
+    useEffect(() => {
+        if (resultsReady) {
+            const dataFetcher = new PaginatedDataFetcher(
+                process.env.REACT_APP_SITEURL + 'gdc/api/geojson/?' + searchParams,
+                setResults,
+                setResultsReady,
+                setLoadingProgress,
+                (data) => { return data }
+            )
+            setResultsReady(false)
+            dataFetcher.fetch()
+        }
+    }, [searchParams])
+
+    // HANDLERS FOR STATE CHANGE
+
+    function handleSearchFilter(e){
+        dispatch(setSearchFilter(e.target.value))
+    }
+
+    // DOM RENDERING
+
+    // Rendering results list
+    var resultsDOM = null
+    if(resultsReady){
+        var resultsListDOM = []
+        for (let index = 0; index < results.length; index++) {
+            const resultItem = results[index];
+            resultsListDOM.push(
+                <ResultItem key={resultItem.properties.pk} properties={resultItem.properties} />
+            )
+        }
+
+        resultsDOM = (
+            <div className="uk-width-expand uk-margin-top" style={{ paddingLeft: "10px" }}>
+                <label className="uk-form-label uk-text-bolder">Results</label>
+                <div className="uk-width-1-1 uk-overflow-auto gdc-custom-scroller uk-margin-small-top uk-padding-small uk-padding-remove-top uk-padding-remove-bottom uk-padding-remove-left" style={{ height: 'calc( 100vh - 200px )' }}>
+                    {resultsListDOM}
+                </div>
+            </div>
+        )
+    }
+    else {
+        resultsDOM = (
+            <div className="uk-width-expand uk-margin-top" style={{ paddingLeft: "10px" }}>
+                <label className="uk-form-label uk-text-bolder">Results</label>
+                <div className="uk-width-1-1 uk-overflow-auto gdc-custom-scroller uk-margin-small-top uk-padding-small uk-padding-remove-top uk-padding-remove-bottom uk-padding-remove-left" style={{ height: 'calc( 100vh - 200px )' }}>
+                    <p><span data-uk-spinner="ratio: 0.6"></span>&nbsp;Loading...</p>
+                </div>
+            </div>
+        )
+    }
 
     // Rendering categories list
     var categoriesFilterDOM = []
@@ -48,7 +116,7 @@ export default function SearchPanel(props) {
                 <fieldset className="uk-fieldset uk-margin-remove uk-padding-remove">
                     <div className="uk-width-1-1 uk-search uk-search-default">
                         <span data-uk-search-icon></span>
-                        <input className="uk-search-input" type="search" placeholder="Search dataset" aria-label="" />
+                        <input className="uk-search-input" type="search" placeholder="Search dataset" aria-label="" onChange={(e) => { handleSearchFilter(e) }} />
                     </div>
                 </fieldset>
 
@@ -95,11 +163,7 @@ export default function SearchPanel(props) {
                         </div>
 
                         {/* Results list */}
-                        <div className="uk-width-expand uk-margin-top" style={{paddingLeft: "10px"}}>
-                            <label className="uk-form-label uk-text-bolder">Results</label>
-                            <ResultItem title='ResultItem title' abstract='ResultItem abstract' url='/'/>
-                            <ResultItem title='ResultItem title' abstract='ResultItem abstract' url='/'/>
-                        </div>
+                        {resultsDOM}
                     </div>
                     
                 </div>

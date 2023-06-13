@@ -3,21 +3,20 @@ import { createSlice } from '@reduxjs/toolkit'
 const mainSlice = createSlice({
     name: 'main',
     initialState: {
-        value: 0
+        filters: []
     },
     reducers: {
-        incremented: state => {
-            // Redux Toolkit allows us to write "mutating" logic in reducers. It
-            // doesn't actually mutate the state because it uses the Immer library,
-            // which detects changes to a "draft state" and produces a brand new
-            // immutable state based off those changes
-            state.value += 1
+        // This function sets the value of search filter
+        setSearchFilter: (state, action) => {
+            state.filters = state.filters.filter(filter => filter.key !== 'search');
+            state.filters.push({key: 'search', value: action.payload})
         },
-        decremented: state => {
-            state.value -= 1
-        }
+        // This function removes a filter key/value pair
+        removeFilter: (state, action) => {
+            console.log(action.payload)
+        },
     }
 })
 
 export default mainSlice
-export const { incremented, decremented } = mainSlice.actions
+export const { setSearchFilter, removeFilter } = mainSlice.actions
