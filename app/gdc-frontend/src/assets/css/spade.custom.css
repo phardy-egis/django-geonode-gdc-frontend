@@ -31,7 +31,7 @@ body {
     transition: width 0.5s, opacity 0.2s;
 }
 
-#right-panel {
+#legendpanel {
     width: 0px;
 }
 

@@ -3,13 +3,15 @@
 // Adding JS libraries
 import L from 'leaflet';
 import 'leaflet-switch-basemap'
-import $ from 'jquery';
 
 // Import UIKIT (front-end css framework)
 import UIkit from 'uikit';
 import Icons from 'uikit/dist/js/uikit-icons';
 UIkit.use(Icons);
 import {debounce} from 'debounce';
+
+// Import Jquery
+import $ from 'jquery';
 
 // =========================================================================================================================
 // ================================================ FILTER MANAGER =========================================================
@@ -21,12 +23,18 @@ import {debounce} from 'debounce';
 export class FilterManager {
 
 
-    constructor(DOMAIN_NAME_FULL) {
-        this.url = new URL(DOMAIN_NAME_FULL + "gdc/api/resource_list_json/")
+    constructor(process.env.REACT_APP_SITEURL) {
+        this.url = new URL(process.env.REACT_APP_SITEURL + "gdc/api/resource_list_json/")
         this.bboxFilterActive = true
         this.bboxFilterValue = ''
         this.mainResultList = null
         this.results_fetching = []
+
+        this.filters = {
+            bbox: '',
+            search: '',
+            results: []
+        }
     }
 
     setResultList(resultList){
@@ -99,10 +107,10 @@ export class FilterManager {
 // Class used to manage layer order and loading in leaflet
 export class LayerManager {
 
-    constructor(parentMap, DOMAIN_NAME_FULL) {
+    constructor(parentMap, process.env.REACT_APP_SITEURL) {
         this.parentMap = parentMap
         this.layers = {}
-        this.DOMAIN_NAME_FULL = DOMAIN_NAME_FULL
+        this.process.env.REACT_APP_SITEURL = process.env.REACT_APP_SITEURL
         this.layerPane = parentMap.createPane('wmsPane');
 
         this.layerPane.style.zIndex = 250;
@@ -136,7 +144,7 @@ export class LayerManager {
             maxZoom: 20,
             pane: this.layerPane,
         }
-        var layerLeaflet = L.tileLayer.wms(this.DOMAIN_NAME_FULL + 'geoserver/ows?', wmsOptions).addTo(this.parentMap);
+        var layerLeaflet = L.tileLayer.wms(this.process.env.REACT_APP_SITEURL + 'geoserver/ows?', wmsOptions).addTo(this.parentMap);
         layerLeaflet.setOpacity(100)
 
         this.layers[layerKey] = {

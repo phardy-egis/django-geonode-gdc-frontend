@@ -1,16 +1,15 @@
 version: "3"
 
 services:
-  gdc-frontend:
+  gdc-frontend-dev:
+    container_name: gdc-frontend-dev
     image: "node:16"
     user: "node"
     working_dir: /home/node/app/gdc-frontend
-    environment:
-      - NODE_ENV=development
-      - WATCHPACK_POLLING=true
-      - REACT_APP_SITEURL=${REACT_APP_SITEURL}
+    env_file:
+      - .env
     volumes:
       - ./app:/home/node/app
     ports:
       - "3000:3000"
-    command: "npm run start"
+    entrypoint: "npm run start"
