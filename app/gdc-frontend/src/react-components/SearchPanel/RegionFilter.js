@@ -5,6 +5,9 @@ import React from 'react';
 // Import UIKIT (front-end css framework)
 import UIkit from 'uikit';
 import Icons from 'uikit/dist/js/uikit-icons';
+import { store } from '../../index';
+import { setRegionFilter } from '../../redux/slices/MainSlice';
+
 UIkit.use(Icons);
 
 // FILTER - SELECT LIST
@@ -85,7 +88,8 @@ export default class RegionFilter extends React.Component {
                     endpoint='api/v2/regions'
                     filter='filter{lft.gt}=0&filter{rght.lt}=8000000&filter{level}=1&sort[]=name&page_size=50'
                     level={1}
-                    verbose_name='Region'>
+                    verbose_name='Region'
+                    handleChange={this.handleChange}>
                 </SelectList >
             )
 
@@ -97,7 +101,8 @@ export default class RegionFilter extends React.Component {
                         endpoint='api/v2/regions'
                         filter={this.state.filter_level2}
                         level={2}
-                        verbose_name='Country'>
+                        verbose_name='Country'
+                        handleChange={this.handleChange}>
                     </SelectList>
                 )
             }
@@ -110,7 +115,8 @@ export default class RegionFilter extends React.Component {
                         endpoint='api/v2/regions'
                         filter={this.state.filter_level3}
                         level={3}
-                        verbose_name='Subdivision'>
+                        verbose_name='Subdivision'
+                        handleChange={this.handleChange}>
                     </SelectList>
                 )
             }
@@ -119,8 +125,7 @@ export default class RegionFilter extends React.Component {
         return (
             <div className="uk-width-1-1">
                 <div className="uk-margin-remove">
-                    <label className="uk-form-small uk-padding-remove">
-                    <input className="uk-checkbox" type="checkbox" onClick={this.handleChangeChk} defaultChecked={this.state.filterByMapExtent}/> Map extent</label>
+                    <label className="uk-form-small uk-padding-remove"><input className="uk-checkbox" type="checkbox" onClick={this.handleChangeChk} defaultChecked={this.state.filterByMapExtent} /> Map extent</label>
                 </div>
                 <div className="uk-margin-remove">
                     {region_filters}
@@ -137,6 +142,7 @@ class SelectList extends React.Component {
         super(props);
         this.state = {
             status: 'loading',
+            currentValue: '',
             rcode: '',
             ccode: '',
             choices: {},
@@ -152,6 +158,7 @@ class SelectList extends React.Component {
                     this.setState({
                         status: 'ready',
                         choices: result.regions,
+                        currentValue: '',
                     })
                 },
                 (error) => {
@@ -164,19 +171,32 @@ class SelectList extends React.Component {
             )
     }
 
+    setRegionFilter(e){
+        const regionFilterID = e.target.value.split(',')[3]
+        store.dispatch(setRegionFilter({
+            oldValue: this.state.currentValue,
+            newValue: regionFilterID
+        }))
+        this.setState({
+            ...this.state,
+            currentValue: regionFilterID,
+        })
+        this.props.handleChange(e, this.props.level)
+    }
+
     render() {
 
         // Loading option parameters
         var list_items = []
         for (var i = 0; i < this.state.choices.length; i++) {
             var item = this.state.choices[i];
-            list_items.push(<option key={item['id']} value={item['id']}>{item['name']}</option>)
+            list_items.push(<option key={item['code']} value={[item['lft'], item['rght'], item['code'], item['id']]}>{item['name']}</option>)
         }
 
         if (this.state.status == 'ready') {
             return (
                 <fieldset className="uk-fieldset">
-                    <select className="uk-select uk-form-small" onChange={evt => this.props.handleChange(evt, this.props.level)}>
+                    <select className="uk-select uk-form-small" onChange={e => { this.setRegionFilter(e)}}>
                         <option value="">{this.props.verbose_name}</option>
                         {list_items}
                     </select>

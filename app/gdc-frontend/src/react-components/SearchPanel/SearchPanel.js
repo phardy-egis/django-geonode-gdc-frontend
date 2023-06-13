@@ -64,6 +64,10 @@ export default function SearchPanel(props) {
         dispatch(setSearchFilter(e.target.value))
     }
 
+    function toggleSpatialExtentFilter(e){
+        
+    }
+
     // DOM RENDERING
 
     // Rendering results list

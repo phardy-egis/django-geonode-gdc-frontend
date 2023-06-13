@@ -1,10 +1,10 @@
 export default class FetchWrapper {
 
-    constructor(endpoint , params = [], options = {}, absoluteURL = false){
+    constructor(endpoint , params, options, absoluteURL){
         this.endpoint = endpoint
-        this.params = params
-        this.options = options
-        this.absoluteURL = absoluteURL
+        this.params = params || []
+        this.options = options || {}
+        this.absoluteURL = absoluteURL || false
         this.url = null
         this.urlFromParamsAndEndpoint()
     }

@@ -40,7 +40,7 @@ UIkit.use(Icons);
 // Main page loading spinner
 setTimeout(toggleFullPageLoader, 500)
 
-const store = configureStore({
+export const store = configureStore({
     reducer: mainSlice.reducer
 })
 
