@@ -62,7 +62,7 @@ export default class IconCheckBox extends React.Component {
                         onClick={(e) => { this.handleClick() }}
                         onChange={(e) => { this.handleOnChange() }}>
                     </input>
-                    <label className="uk-form-label uk-margin-small-left">{this.props.name}</label>
+                    <label className="uk-form-label">{this.props.name}</label>
                 </div>
             )
         }
