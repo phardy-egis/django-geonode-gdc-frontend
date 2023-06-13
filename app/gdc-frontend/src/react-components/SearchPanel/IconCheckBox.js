@@ -21,12 +21,13 @@ export default class IconCheckBox extends React.Component {
     handleClick() {
         this.setState({
             active: !this.state.active,
-        })
-        
+        })        
     }
 
-    handleOnChange(){
-        console.log('clicked')
+    handleOnChange(e){
+        if (this.props.onChange){
+            this.props.onChange(e)
+        }
     }
 
     render() {
@@ -47,7 +48,7 @@ export default class IconCheckBox extends React.Component {
                         onClick={(e) => { this.handleClick() }}
                         onChange={(e) => { this.handleOnChange() }}>
                     </input>
-                    <img className={"uk-icon-image uk-margin-small-left " + iconClassName} src={this.props.src} onClick={(e) => { e.preventDefault(); this.handleClick() }} data-uk-svg="" />
+                    <img className={"uk-icon-image uk-margin-small-left " + iconClassName} src={this.props.src} onClick={(e) => { e.preventDefault(); this.handleClick(e) }} data-uk-svg="" />
                 </div>
             )
         }

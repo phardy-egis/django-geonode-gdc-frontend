@@ -57,7 +57,7 @@ class App extends React.Component{
     render(){
         return (
             <Provider store={store}>
-                <div className="uk-child-width-expand uk-grid-column-collapse uk-grid-row-collapse uk-height-1-1" data-uk-grid>
+                <div className="uk-child-width-expand uk-grid-column-collapse uk-grid-row-collapse uk-height-1-1 uk-overflow-hidden" data-uk-grid>
 
                     <div className="uk-width-1-3 uk-height-1-1 gdc-custom-panel" id="searchpanel">
                         <SearchPanel></SearchPanel>
@@ -71,8 +71,6 @@ class App extends React.Component{
                         <LegendPanel></LegendPanel>
                     </div>
 
-                </div>
-                <div id="mainmodal" className="uk-flex-top uk-modal-container" data-uk-modal>
                 </div>
             </Provider>
         )

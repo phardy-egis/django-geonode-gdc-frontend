@@ -1,5 +1,5 @@
 // Import REACT (dynamic front-end framework)
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 
 // Import UIKIT (front-end css framework)
 import UIkit from "uikit";
@@ -11,11 +11,10 @@ import IconCheckBox from "./IconCheckBox";
 import ResultItem from "./ResultItem";
 import RegionFilter from "./RegionFilter";
 import FetchWrapper, { PaginatedDataFetcher } from "../Utils/customFetch";
-import { useSelector, useDispatch, shallowEqual } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { getSearchParams } from "../../redux/selectors/MainSliceSelectors";
-import { setSearchFilter } from "../../redux/slices/MainSlice";
-import debounce from 'lodash/debounce';
-
+import { setSearchFilter, setCategoryFilter, setStartDateFilter, setEndDateFilter } from "../../redux/slices/MainSlice";
+import debounce from 'lodash.debounce';
 
 export default function SearchPanel(props) {
 
@@ -60,12 +59,27 @@ export default function SearchPanel(props) {
 
     // HANDLERS FOR STATE CHANGE
 
+    // Change search displayed
     function handleSearchFilter(e){
         dispatch(setSearchFilter(e.target.value))
     }
 
-    function toggleSpatialExtentFilter(e){
-        dispatch(toggleSpatialExtentFilter())
+    // Debounced function
+    const debouncedChangeHandler = useCallback( debounce(handleSearchFilter, 500) , []);
+
+    // Change category displayed
+    function toggleCategoryFilter(id) {
+        dispatch(setCategoryFilter(id))
+    }
+
+    function handleSetStartDate(e){
+        const date = new Date(e.target.value)
+        dispatch(setStartDateFilter(date.toISOString()))
+    }
+
+    function handleSetEndDate(e){
+        const date = new Date(e.target.value)
+        dispatch(setEndDateFilter(date.toISOString()))
     }
 
     // DOM RENDERING
@@ -81,14 +95,28 @@ export default function SearchPanel(props) {
             )
         }
 
-        resultsDOM = (
-            <div className="uk-width-expand uk-margin-top" style={{ paddingLeft: "10px" }}>
-                <label className="uk-form-label uk-text-bolder">Results</label>
-                <div className="uk-width-1-1 uk-overflow-auto gdc-custom-scroller uk-margin-small-top uk-padding-small uk-padding-remove-top uk-padding-remove-bottom uk-padding-remove-left" style={{ height: 'calc( 100vh - 130px )' }}>
-                    {resultsListDOM}
+        if (!resultsListDOM.length){
+            resultsDOM = (
+                <div className="uk-width-expand uk-margin-top" style={{ paddingLeft: "10px" }}>
+                    <label className="uk-form-label uk-text-bolder">Results</label>
+                    <div className="uk-width-1-1 uk-overflow-auto gdc-custom-scroller uk-margin-small-top uk-padding-small uk-padding-remove-top uk-padding-remove-bottom uk-padding-remove-left" style={{ height: 'calc( 100vh - 130px )' }}>
+                        <div className="uk-margin">
+                            <p className="uk-text-small uk-text-muted">No results found.</p>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        )
+            )
+        }
+        else{
+            resultsDOM = (
+                <div className="uk-width-expand uk-margin-top" style={{ paddingLeft: "10px" }}>
+                    <label className="uk-form-label uk-text-bolder">Results</label>
+                    <div className="uk-width-1-1 uk-overflow-auto gdc-custom-scroller uk-margin-small-top uk-padding-small uk-padding-remove-top uk-padding-remove-bottom uk-padding-remove-left" style={{ height: 'calc( 100vh - 130px )' }}>
+                        {resultsListDOM}
+                    </div>
+                </div>
+            )
+        }
     }
     else {
         resultsDOM = (
@@ -106,7 +134,7 @@ export default function SearchPanel(props) {
     for (let index = 0; index < categories.length; index++) {
         const category = categories[index];
         categoriesFilterDOM.push(
-            <IconCheckBox key={category.id} src={category.icon_img} name={category.gn_description_en}></IconCheckBox>
+            <IconCheckBox key={category.id} src={category.icon_img} name={category.gn_description_en} onChange={() => { toggleCategoryFilter(category.id)}}></IconCheckBox>
         )
     }
 
@@ -120,7 +148,7 @@ export default function SearchPanel(props) {
                 <fieldset className="uk-fieldset uk-margin-remove uk-padding-remove">
                     <div className="uk-width-1-1 uk-search uk-search-default">
                         <span data-uk-search-icon></span>
-                        <input className="uk-search-input" type="search" placeholder="Search dataset" aria-label="" onChange={(e) => { handleSearchFilter(e) }} />
+                        <input className="uk-search-input" type="search" placeholder="Search dataset" aria-label="" onChange={ debouncedChangeHandler } />
                     </div>
                 </fieldset>
 
@@ -159,9 +187,9 @@ export default function SearchPanel(props) {
                                 <fieldset className="uk-fieldset uk-margin-remove uk-padding-remove">
                                     <p className="uk-form-label uk-padding-remove uk-margin-remove uk-text-bold" >Created</p>
                                     <label className="uk-form-label" >Before</label>
-                                    <input className="uk-input uk-form-small" type="date"></input>
+                                    <input className="uk-input uk-form-small" type="date" onChange={(e) => {handleSetStartDate(e)}}></input>
                                     <label className="uk-form-label" >After</label>
-                                    <input className="uk-input uk-form-small" type="date"></input>  
+                                    <input className="uk-input uk-form-small" type="date" onChange={(e) => { handleSetEndDate(e) }}></input>  
                                 </fieldset>
                             </div>
                         </div>
