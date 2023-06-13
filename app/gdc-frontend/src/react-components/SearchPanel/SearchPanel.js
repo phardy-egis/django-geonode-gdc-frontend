@@ -65,7 +65,7 @@ export default function SearchPanel(props) {
     }
 
     function toggleSpatialExtentFilter(e){
-        
+        dispatch(toggleSpatialExtentFilter())
     }
 
     // DOM RENDERING
@@ -84,7 +84,7 @@ export default function SearchPanel(props) {
         resultsDOM = (
             <div className="uk-width-expand uk-margin-top" style={{ paddingLeft: "10px" }}>
                 <label className="uk-form-label uk-text-bolder">Results</label>
-                <div className="uk-width-1-1 uk-overflow-auto gdc-custom-scroller uk-margin-small-top uk-padding-small uk-padding-remove-top uk-padding-remove-bottom uk-padding-remove-left" style={{ height: 'calc( 100vh - 200px )' }}>
+                <div className="uk-width-1-1 uk-overflow-auto gdc-custom-scroller uk-margin-small-top uk-padding-small uk-padding-remove-top uk-padding-remove-bottom uk-padding-remove-left" style={{ height: 'calc( 100vh - 130px )' }}>
                     {resultsListDOM}
                 </div>
             </div>
@@ -94,7 +94,7 @@ export default function SearchPanel(props) {
         resultsDOM = (
             <div className="uk-width-expand uk-margin-top" style={{ paddingLeft: "10px" }}>
                 <label className="uk-form-label uk-text-bolder">Results</label>
-                <div className="uk-width-1-1 uk-overflow-auto gdc-custom-scroller uk-margin-small-top uk-padding-small uk-padding-remove-top uk-padding-remove-bottom uk-padding-remove-left" style={{ height: 'calc( 100vh - 200px )' }}>
+                <div className="uk-width-1-1 uk-overflow-auto gdc-custom-scroller uk-margin-small-top uk-padding-small uk-padding-remove-top uk-padding-remove-bottom uk-padding-remove-left" style={{ height: 'calc( 100vh - 130px )' }}>
                     <p><span data-uk-spinner="ratio: 0.6"></span>&nbsp;Loading...</p>
                 </div>
             </div>

@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const mainSlice = createSlice({
     name: 'main',
     initialState: {
+        filterByMapExtent: true,
         filters: []
     },
     reducers: {
@@ -19,8 +20,22 @@ const mainSlice = createSlice({
             state.filters.push({ key: 'regions', value: action.payload.newValue })
             console.log(state.filters)
         },
+        
+        // This function toggle the map extent filter
+        toggleSpatialExtentFilter: (state) => {
+            console.log('filterByMapExtent')
+            console.log(!state.filterByMapExtent)
+            state.filterByMapExtent = !state.filterByMapExtent
+        },
+
+        // This function toggle the map extent filter
+        setCategorieFilter: (state) => {
+            console.log('filterByMapExtent')
+            console.log(!state.filterByMapExtent)
+            state.filterByMapExtent = !state.filterByMapExtent
+        },
     }
 })
 
 export default mainSlice
-export const { setSearchFilter, setRegionFilter } = mainSlice.actions
+export const { setSearchFilter, setRegionFilter, toggleSpatialExtentFilter } = mainSlice.actions

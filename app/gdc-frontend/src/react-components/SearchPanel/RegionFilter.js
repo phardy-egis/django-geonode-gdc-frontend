@@ -7,6 +7,7 @@ import UIkit from 'uikit';
 import Icons from 'uikit/dist/js/uikit-icons';
 import { store } from '../../index';
 import { setRegionFilter } from '../../redux/slices/MainSlice';
+import { toggleSpatialExtentFilter  } from '../../redux/slices/MainSlice';
 
 UIkit.use(Icons);
 
@@ -64,6 +65,7 @@ export default class RegionFilter extends React.Component {
         var current_state = this.state
         current_state['filterByMapExtent'] = !current_state['filterByMapExtent']
         if (current_state['filterByMapExtent']) {
+
             this.setState({
                 treeLevel: 1,
                 filter_level2: 'filter{lft.gt}=0&filter{rght.lt}=8000000&filter{level}=2&sort[]=name&page_size=50',
@@ -71,9 +73,11 @@ export default class RegionFilter extends React.Component {
                 filterByMapExtent: true,
             })
         }
-        else (
+        else {
             this.setState(current_state)
-        )
+        }
+
+        store.dispatch(toggleSpatialExtentFilter())
     }
 
     render() {

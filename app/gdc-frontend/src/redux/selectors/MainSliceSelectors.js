@@ -1,8 +1,22 @@
 export function getSearchParams(state) {
     const searchParams = new URLSearchParams()
-    for (let index = 0; index < state.filters.length; index++) {
-        const param = state.filters[index];
-        searchParams.append(param.key, param.value);
+
+    var activeFilters = ''
+    if (state.filterByMapExtent){
+        // Datasets are not filtered by region if filterByMapExtent is true
+        activeFilters = state.filters.filter(filter => (filter.key !== 'regions'));
+    }
+    else {
+        // Datasets are not filtered by BBOX if filterByMapExtent is false
+        activeFilters = state.filters.filter(filter => (filter.key !== 'bbox'));
+    }
+    
+
+    for (let index = 0; index < activeFilters.length; index++) {
+        const param = activeFilters[index];
+        if (param.value){
+            searchParams.append(param.key, param.value);
+        }
     }
     return searchParams.toString()
 }
