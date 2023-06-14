@@ -20,3 +20,15 @@ export function getSearchParams(state) {
     }
     return searchParams.toString()
 }
+
+export function getClusterStatus(state){
+    return state.clusterIsActive
+}
+
+export function getBBOXStatus(state) {
+    return state.bboxIsActive
+}
+
+export function getActiveGeonodeLayers(state) {
+    return state.activeGeonodeLayers
+}

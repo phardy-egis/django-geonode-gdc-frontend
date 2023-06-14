@@ -4,7 +4,10 @@ const mainSlice = createSlice({
     name: 'main',
     initialState: {
         filterByMapExtent: true,
-        filters: []
+        filters: [],
+        activeGeonodeLayers: [],
+        clusterIsActive: true,
+        bboxIsActive: true
     },
     reducers: {
         // This function sets the value of search filter
@@ -56,8 +59,41 @@ const mainSlice = createSlice({
             state.filters = [...filtered, { key: 'bbox', value: action.payload }]
             console.log(state.filters)
         },
+
+        toggleClusterStatus: (state, action) => {
+            state.clusterIsActive = action.payload
+            console.log(state.clusterIsActive)
+        },
+
+        toggleBBOXStatus: (state, action) => {
+            state.bboxIsActive = action.payload
+            console.log(state.bboxIsActive)
+        },
+
+        addLayer: (state, action) => {
+            state.layers = [
+                ...state.layers,
+                {
+                    key: state.key,
+                    id: action.payload.geonodeLayerId,
+                    bbox: action.payload.bbox,
+                }
+            ]
+            state.key = state.key + 1
+        }
+
     }
 })
 
 export default mainSlice
-export const { setSearchFilter, setRegionFilter, toggleSpatialExtentFilter, setCategoryFilter, setStartDateFilter, setEndDateFilter, setBBOXFilter  } = mainSlice.actions
+export const { 
+    setSearchFilter, 
+    setRegionFilter, 
+    toggleSpatialExtentFilter, 
+    setCategoryFilter, 
+    setStartDateFilter, 
+    setEndDateFilter, 
+    setBBOXFilter,
+    toggleClusterStatus,
+    toggleBBOXStatus
+} = mainSlice.actions
