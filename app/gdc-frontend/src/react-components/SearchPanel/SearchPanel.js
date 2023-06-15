@@ -45,6 +45,7 @@ export default function SearchPanel(props) {
 
     useEffect(() => {
         if (resultsReady) {
+            setResultsReady(false)
             const dataFetcher = new PaginatedDataFetcher(
                 process.env.REACT_APP_SITEURL + 'gdc/api/geojson/?' + searchParams,
                 setResults,
@@ -52,35 +53,42 @@ export default function SearchPanel(props) {
                 setLoadingProgress,
                 (data) => { return data }
             )
-            setResultsReady(false)
             dataFetcher.fetch()
         }
     }, [searchParams])
 
     // HANDLERS FOR STATE CHANGE
 
-    // Change search displayed
+    // Handler for filter SEARCH
     function handleSearchFilter(e){
         dispatch(setSearchFilter(e.target.value))
     }
+    const debouncedSearchFilterChangeHandler = useCallback( debounce(handleSearchFilter, 300) , []);
 
-    // Debounced function
-    const debouncedChangeHandler = useCallback( debounce(handleSearchFilter, 500) , []);
 
-    // Change category displayed
+    // Handler for filter CATEGORY
     function toggleCategoryFilter(id) {
         dispatch(setCategoryFilter(id))
     }
+    // Debounced function
+    const debouncedCategoryChangeHandler = useCallback(debounce(toggleCategoryFilter, 150), []);
 
+    // Handler for filter START DATE
     function handleSetStartDate(e){
         const date = new Date(e.target.value)
         dispatch(setStartDateFilter(date.toISOString()))
     }
+    // Debounced function
+    const debouncedStartDateFilterChangeHandler = useCallback(debounce(handleSetStartDate, 150), []);
 
+    // Handler for filter END DATE
     function handleSetEndDate(e){
         const date = new Date(e.target.value)
         dispatch(setEndDateFilter(date.toISOString()))
     }
+    // Debounced function
+    const debouncedEndDateFilterChangeHandler = useCallback(debounce(handleSetEndDate, 150), []);
+
 
     // DOM RENDERING
 
@@ -91,7 +99,7 @@ export default function SearchPanel(props) {
         for (let index = 0; index < results.length; index++) {
             const resultItem = results[index];
             resultsListDOM.push(
-                <ResultItem key={resultItem.properties.pk} properties={resultItem.properties} />
+                <ResultItem key={resultItem.properties.pk} layerid={resultItem.properties.pk} properties={resultItem.properties} geojson={resultItem} />
             )
         }
 
@@ -134,7 +142,7 @@ export default function SearchPanel(props) {
     for (let index = 0; index < categories.length; index++) {
         const category = categories[index];
         categoriesFilterDOM.push(
-            <IconCheckBox key={category.id} src={category.icon_img} name={category.gn_description_en} onChange={() => { toggleCategoryFilter(category.id)}}></IconCheckBox>
+            <IconCheckBox key={category.id} src={category.icon_img} name={category.gn_description_en} onChange={() => { debouncedCategoryChangeHandler(category.id)}}></IconCheckBox>
         )
     }
 
@@ -148,7 +156,7 @@ export default function SearchPanel(props) {
                 <fieldset className="uk-fieldset uk-margin-remove uk-padding-remove">
                     <div className="uk-width-1-1 uk-search uk-search-default">
                         <span data-uk-search-icon></span>
-                        <input className="uk-search-input" type="search" placeholder="Search dataset" aria-label="" onChange={ debouncedChangeHandler } />
+                        <input className="uk-search-input" type="search" placeholder="Search dataset" aria-label="" onChange={ debouncedSearchFilterChangeHandler } />
                     </div>
                 </fieldset>
 
@@ -187,9 +195,9 @@ export default function SearchPanel(props) {
                                 <fieldset className="uk-fieldset uk-margin-remove uk-padding-remove">
                                     <p className="uk-form-label uk-padding-remove uk-margin-remove uk-text-bold" >Created</p>
                                     <label className="uk-form-label" >Before</label>
-                                    <input className="uk-input uk-form-small" type="date" onChange={(e) => {handleSetStartDate(e)}}></input>
+                                    <input className="uk-input uk-form-small" type="date" onChange={(e) => { debouncedStartDateFilterChangeHandler(e)}}></input>
                                     <label className="uk-form-label" >After</label>
-                                    <input className="uk-input uk-form-small" type="date" onChange={(e) => { handleSetEndDate(e) }}></input>  
+                                    <input className="uk-input uk-form-small" type="date" onChange={(e) => { debouncedEndDateFilterChangeHandler(e) }}></input>  
                                 </fieldset>
                             </div>
                         </div>

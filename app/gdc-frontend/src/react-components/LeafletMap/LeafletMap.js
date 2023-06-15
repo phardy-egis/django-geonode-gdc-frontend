@@ -72,7 +72,6 @@ function CustomControls(){
 function BBOXFilterTracking() {
     const map = useMapEvent('move', () => {
         var bounds = map.getBounds().toBBoxString();
-        console.log(bounds)
         store.dispatch(setBBOXFilter(bounds))
     })
     return null

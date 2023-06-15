@@ -1,4 +1,5 @@
-// RESULTS - RESULT LIST ITEMS
+import React from "react";
+
 export default class ImgPlus extends React.Component {
 
     constructor(props) {

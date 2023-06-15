@@ -21,11 +21,9 @@ import UIkit from 'uikit';
 import Icons from 'uikit/dist/js/uikit-icons';
 import { configureStore } from '@reduxjs/toolkit'
 import { Provider } from 'react-redux';
-import { MapContainer } from 'react-leaflet/esm/MapContainer'
-import { TileLayer } from 'react-leaflet/esm/TileLayer'
 
 // JSX COMPONENTS
-import LegendPanel from './react-components/LegendPanel/Main';
+import LegendPanel from './react-components/LegendPanel/LegendPanel';
 import SearchPanel from './react-components/SearchPanel/SearchPanel';
 
 // IMGs

@@ -1,3 +1,5 @@
+import $ from 'jquery'
+
 // ==================================================================================================================
 // ================================================ UTILITIES =======================================================
 // ==================================================================================================================
@@ -44,4 +46,21 @@ export function quoteUrl(url, safe) {
     url = url.replace(new RegExp(toUnencode.join('|'), 'ig'), decodeURIComponent);
 
     return url;
+}
+
+// Taken from https://stackoverflow.com/questions/47549648/uikit-how-to-get-order-with-the-sortable-component
+/**
+ * This function return a boolean if a layer of a given ID already exists in the store
+ * @param  {object} state           The REDUX state object for current store
+ * @return {number}                 Position index of sortable item
+ */
+export function getSortableCurrentIndex(e){
+
+    const currentLi = e.originalEvent.explicitOriginalTarget.parentNode;
+    indexes = [];
+    $(this).find('li').each(function () {
+        indexes.push($(this).data("index"));
+    });
+    return $(currentLi).index()
+
 }

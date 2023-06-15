@@ -177,10 +177,7 @@ class SelectList extends React.Component {
 
     setRegionFilter(e){
         const regionFilterID = e.target.value.split(',')[3]
-        store.dispatch(setRegionFilter({
-            oldValue: this.state.currentValue,
-            newValue: regionFilterID
-        }))
+        store.dispatch(setRegionFilter(regionFilterID))
         this.setState({
             ...this.state,
             currentValue: regionFilterID,
