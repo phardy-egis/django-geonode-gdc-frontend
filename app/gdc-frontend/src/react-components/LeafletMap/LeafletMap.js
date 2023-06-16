@@ -1,6 +1,6 @@
 // JS LIBRARIES
 import React, { useEffect, useState } from 'react';
-import L from 'leaflet';
+import L, { TileLayer } from 'leaflet';
 import "leaflet-loading";
 import "leaflet-switch-basemap";
 import { vectorBasemapLayer } from "esri-leaflet-vector";
@@ -15,7 +15,7 @@ import "leaflet-loading/src/Control.Loading.css"
 import { store } from '../..';
 import { setBBOXFilter } from '../../redux/slices/MainSlice';
 import { useSelector } from 'react-redux';
-import { getAvailableLayerReadinessStatus, getBBOXStatus, getGeoJSONBBOXes } from '../../redux/selectors/MainSliceSelectors';
+import { getActiveLayersWithoutStyle, getAvailableLayerReadinessStatus, getBBOXStatus, getGeoJSONBBOXes } from '../../redux/selectors/MainSliceSelectors';
 import { debounce } from 'lodash';
 
 export default function LeafletMap(){
@@ -24,12 +24,13 @@ export default function LeafletMap(){
     const geoJSONBBOXesData = useSelector(state => getGeoJSONBBOXes(state))
     const availableLayersReadiness = useSelector(state => getAvailableLayerReadinessStatus(state))
     const bboxLayerActive = useSelector(state => getBBOXStatus(state))
+    const activeLayers = useSelector(state => getActiveLayersWithoutStyle(state))
+
+
 
     // DOM rendering for GeoJSON BBOXes
     var geoJSONDom = null
     if (availableLayersReadiness){
-
-
 
         var geojsonStyle = {
             "color": "#ff7800",
@@ -49,6 +50,23 @@ export default function LeafletMap(){
         
     }
 
+    console.log(activeLayers)
+    if (activeLayers.length > 0){
+        var layerDOM = []
+        for (let index = 0; index < activeLayers.length; index++) {
+            const layer = activeLayers[index];
+            console.log(layer.details.alternate)
+
+            var wmsOptions = {
+                layers: layer.details.alternate,
+                transparent: true,
+                format: 'image/png',
+                maxZoom: 20,
+            }
+            layerDOM.push(<TileLayer key={layer.alternate} url={process.env.REACT_APP_SITEURL + 'geoserver/ows'} params={wmsOptions}></TileLayer>)            
+        }
+    }
+
     return (                    
         <div className="uk-width-expand uk-height-1-1 uk-padding-remove uk-animation-fade">                        
             <MapContainer center={[14.5965788, 120.9445403]} zoom={4} options={{ debounceMoveend : true}} style={{ height: "100%", width: "100%", padding: '0px', margin: '0px' }} scrollWheelZoom={true} loadingControl={true}>
@@ -58,7 +76,7 @@ export default function LeafletMap(){
                 <Pane name="background" style={{ zIndex: -300 }}>
                     <EsriVectorBasemapLayer apiKey={process.env.REACT_APP_ESRI_API_KEY} pane='background'></EsriVectorBasemapLayer>
                 </Pane>
-
+                {layerDOM}
                 {geoJSONDom}
 
             </MapContainer>
