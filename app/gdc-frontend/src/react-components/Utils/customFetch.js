@@ -70,7 +70,7 @@ export class PaginatedDataFetcher {
             // Get offset from URL
             const nexturl = new URL(responseJSON.next)
             const progress = nexturl.searchParams.get('offset')
-            this.loadingProgressSetter([progress, responseJSON.count.toString()])
+            this.loadingProgressSetter([this.data.length.toString(), responseJSON.count.toString()])
         }
 
         // If data fetching is completed, we reformat data

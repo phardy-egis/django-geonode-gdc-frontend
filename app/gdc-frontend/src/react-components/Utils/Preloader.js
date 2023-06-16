@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 
 export default function Preloader() {
 
-    const [loadingProgress, setLoadingProgress] = useState(0)
+    const [loadingProgress, setLoadingProgress] = useState([0,1])
     const [resultReady, setResultsReady] = useState(false)
 
     const dispatch = useDispatch()
@@ -43,7 +43,8 @@ export default function Preloader() {
         <div id="preloader" className="uk-overlay-default uk-height-1-1">
             <div className="uk-position-center">
                 <h3 className="uk-text-center uk-text-muted">
-                    <span uk-spinner="ratio: 2"></span>
+                    <p className="uk-text-small uk-text-bold"><span uk-spinner="ratio: 0.6"></span>&nbsp;&nbsp;&nbsp;Data loading...</p>
+                    <progress id="js-progressbar" className="uk-progress" value={loadingProgress[0]} max={loadingProgress[1]} style={{height:"5px"}}></progress>
                 </h3>
             </div>
         </div>
