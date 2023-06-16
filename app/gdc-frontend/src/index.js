@@ -45,7 +45,6 @@ export function App(){
 
     const availableLayersReady = useSelector(state => getAvailableLayerReadinessStatus(state))
 
-    console.log(availableLayersReady)
     if (availableLayersReady){
         return (
             <Provider store={store}>

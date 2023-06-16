@@ -10,11 +10,12 @@ UIkit.use(Icons);
 import IconCheckBox from "./IconCheckBox";
 import ResultItem from "./ResultItem";
 import RegionFilter from "./RegionFilter";
-import FetchWrapper, { PaginatedDataFetcher } from "../Utils/customFetch";
+import FetchWrapper from "../Utils/customFetch";
 import { useSelector, useDispatch } from 'react-redux'
 import { getSearchParams } from "../../redux/selectors/MainSliceSelectors";
 import { setSearchFilter, setCategoryFilter, setStartDateFilter, setEndDateFilter } from "../../redux/slices/MainSlice";
 import debounce from 'lodash.debounce';
+import NextLoader from "./NextLoader";
 
 export default function SearchPanel(props) {
 
@@ -40,20 +41,36 @@ export default function SearchPanel(props) {
     // Managing result list
     const searchParams = useSelector(state => getSearchParams(state))
     const [resultsReady, setResultsReady] = useState(true)
+    const [resultsCount, setResultsCount] = useState(0)
     const [loadingProgress, setLoadingProgress] = useState(false)
     const [results, setResults] = useState([])
+    const [nextURL, setNextURL] = useState(false)
 
     useEffect(() => {
         if (resultsReady) {
             setResultsReady(false)
-            const dataFetcher = new PaginatedDataFetcher(
-                process.env.REACT_APP_SITEURL + 'gdc/api/geojson/?' + searchParams,
-                setResults,
-                setResultsReady,
-                setLoadingProgress,
-                (data) => { return data }
-            )
-            dataFetcher.fetch()
+            const dataLightFetcher = new FetchWrapper('gdc/api/geojson/?' + searchParams)
+            dataLightFetcher.fetch()
+                .then((res) => res.json())
+                .then((data) => {
+                    setResults(data.results)
+                    setResultsReady(true)
+                    if (data.next){
+                        setNextURL(data.next)
+                    }
+                    else {
+                        setNextURL(false)
+                    }
+                    if(data.count){
+                        setResultsCount(data.count)
+                    }
+                    else{
+                        setResultsCount(data.count)
+                    }
+                })
+                .catch(function (error) {
+                    UIkit.notification(`Error. ${error}`, { status: 'danger' })
+                });
         }
     }, [searchParams])
 
@@ -89,8 +106,32 @@ export default function SearchPanel(props) {
     // Debounced function
     const debouncedEndDateFilterChangeHandler = useCallback(debounce(handleSetEndDate, 150), []);
 
+    function handleNextLoader(nextURL){
+        const dataLightFetcher = new FetchWrapper(nextURL, [], {}, true)
+        // console.log('fetch next result')
+        dataLightFetcher.fetch()
+            .then((res) => res.json())
+            .then((data) => {
+                setResults(results.concat(data.results))
+                if (data.next) {
+                    setNextURL(data.next)
+                }
+                else {
+                    setNextURL(null)
+                }
+            })
+            .catch(function (error) {
+                UIkit.notification(`Error. ${error}`, { status: 'danger' })
+            });
+    }
 
     // DOM RENDERING
+
+    // NextItem if nextURL url is not null
+    var nextLoaderDOM = null
+    if (nextURL && results.length > 0 && resultsReady){
+        nextLoaderDOM = (<NextLoader key={nextURL} onIntersect={handleNextLoader} nextURL={nextURL}></NextLoader>)
+    }
 
     // Rendering results list
     var resultsDOM = null
@@ -105,35 +146,16 @@ export default function SearchPanel(props) {
 
         if (!resultsListDOM.length){
             resultsDOM = (
-                <div className="uk-width-expand uk-margin-top" style={{ paddingLeft: "10px" }}>
-                    <label className="uk-form-label uk-text-bolder">Results</label>
-                    <div className="uk-width-1-1 uk-overflow-auto gdc-custom-scroller uk-margin-small-top uk-padding-small uk-padding-remove-top uk-padding-remove-bottom uk-padding-remove-left" style={{ height: 'calc( 100vh - 130px )' }}>
-                        <div className="uk-margin">
-                            <p className="uk-text-small uk-text-muted">No results found.</p>
-                        </div>
-                    </div>
-                </div>
+                <p className="uk-text-small uk-text-muted">No results found.</p>
             )
         }
         else{
-            resultsDOM = (
-                <div className="uk-width-expand uk-margin-top" style={{ paddingLeft: "10px" }}>
-                    <label className="uk-form-label uk-text-bolder">Results</label>
-                    <div className="uk-width-1-1 uk-overflow-auto gdc-custom-scroller uk-margin-small-top uk-padding-small uk-padding-remove-top uk-padding-remove-bottom uk-padding-remove-left" style={{ height: 'calc( 100vh - 130px )' }}>
-                        {resultsListDOM}
-                    </div>
-                </div>
-            )
+            resultsDOM = resultsListDOM
         }
     }
     else {
         resultsDOM = (
-            <div className="uk-width-expand uk-margin-top" style={{ paddingLeft: "10px" }}>
-                <label className="uk-form-label uk-text-bolder">Results</label>
-                <div className="uk-width-1-1 uk-overflow-auto gdc-custom-scroller uk-margin-small-top uk-padding-small uk-padding-remove-top uk-padding-remove-bottom uk-padding-remove-left" style={{ height: 'calc( 100vh - 130px )' }}>
                     <p><span data-uk-spinner="ratio: 0.6"></span>&nbsp;Loading...</p>
-                </div>
-            </div>
         )
     }
 
@@ -205,7 +227,14 @@ export default function SearchPanel(props) {
                             </div>
 
                             {/* Results list */}
-                            {resultsDOM}
+                            <div className="uk-width-expand uk-margin-top" style={{ paddingLeft: "10px" }}>
+                                <label className="uk-form-label uk-text-bolder">{resultsCount} Results</label>
+                                {/* <span className="uk-text-light uk-text-small uk-text-muted">({results.length} listed)</span> */}
+                                <div className="uk-width-1-1 uk-overflow-auto gdc-custom-scroller uk-margin-small-top uk-padding-small uk-padding-remove-top uk-padding-remove-bottom uk-padding-remove-left" style={{ height: 'calc( 100vh - 130px )' }}>
+                                    {resultsDOM}
+                                    {nextLoaderDOM}
+                                </div>
+                            </div>
                         </div>
                         
                     </div>

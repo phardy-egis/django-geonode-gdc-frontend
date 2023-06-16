@@ -144,7 +144,6 @@ const mainSlice = createSlice({
             ]
 
             state.activeLayers = updatedActiveLayers
-            console.log(state.activeLayers)
         },
 
         setAvailableLayersReady: (state, action) => {

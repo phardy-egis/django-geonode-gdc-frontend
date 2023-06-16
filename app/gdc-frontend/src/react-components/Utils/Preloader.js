@@ -18,14 +18,12 @@ export default function Preloader() {
             "features": layersWithCoords
                 
         }
-        console.log(geoJSON)
         dispatch(setGeoJSONBBOXes(geoJSON))
     }
 
     function handleResultReadyChange(status) {
         dispatch(setAvailableLayersReady(status))
         setResultsReady(true)
-        console.log('results ready')
     }
 
     useEffect(() => {

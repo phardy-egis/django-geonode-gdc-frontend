@@ -16,26 +16,36 @@ import { store } from '../..';
 import { setBBOXFilter } from '../../redux/slices/MainSlice';
 import { useSelector } from 'react-redux';
 import { getAvailableLayerReadinessStatus, getBBOXStatus, getGeoJSONBBOXes } from '../../redux/selectors/MainSliceSelectors';
+import { debounce } from 'lodash';
 
 export default function LeafletMap(){
 
+    // geoJSONData selectors
     const geoJSONBBOXesData = useSelector(state => getGeoJSONBBOXes(state))
     const availableLayersReadiness = useSelector(state => getAvailableLayerReadinessStatus(state))
     const bboxLayerActive = useSelector(state => getBBOXStatus(state))
 
-
+    // DOM rendering for GeoJSON BBOXes
     var geoJSONDom = null
-    console.log(bboxLayerActive)
     if (availableLayersReadiness){
-        const geojsonStyle = {
+
+
+
+        var geojsonStyle = {
             "color": "#ff7800",
             "weight": 1,
-            "opacity": 0.5,
+            "opacity": 0,
             "fillOpacity": 0,
         };
         if (bboxLayerActive){
-            geoJSONDom = (<GeoJSON data={geoJSONBBOXesData} style={geojsonStyle} />)
+            geojsonStyle = {
+                "color": "#ff7800",
+                "weight": 1,
+                "opacity": 0.8,
+                "fillOpacity": 0,
+            };
         }
+        geoJSONDom = (<GeoJSON data={geoJSONBBOXesData} style={geojsonStyle} />)
         
     }
 
@@ -58,13 +68,23 @@ export default function LeafletMap(){
 
 // This function observes map size change on screen and trigger invalidateSize when map is resized
 function MapInvalidator(){
+
+    const [ready, setReady] = useState(false)
+
     const map = useMap()
     useEffect(() => {
-        const resizeObserver = new ResizeObserver((entries) => {
-            map.invalidateSize()
-        })
-        resizeObserver.observe(map._container);
-    })
+        if(!ready){
+            function invalidate() {
+                map.invalidateSize()
+            }
+            const resizeObserver = new ResizeObserver(debounce((entries) => {
+                map.invalidateSize()
+            }, 50)
+            )
+            resizeObserver.observe(map._container);
+            setReady(true)
+        }
+    }, [ready])
     return null
 }
 
