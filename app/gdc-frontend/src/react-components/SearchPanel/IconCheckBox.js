@@ -39,23 +39,27 @@ export default class IconCheckBox extends React.Component {
         if (this.props.src){
             return (
                 <div
-                    className="uk-margin-remove-top uk-padding-remove-left"
+                    className="uk-margin-small-top uk-padding-remove-left uk-flex uk-flex-center uk-width-1-2@l"
                     uk-tooltip={"title: " + this.props.name + "; pos: top-center"} >
-                    <input
-                        className="uk-checkbox uk-margin-remove"
-                        type="checkbox"
-                        checked={this.state.active}
-                        onClick={(e) => { this.handleClick() }}
-                        onChange={(e) => { this.handleOnChange() }}>
-                    </input>
-                    <img className={"uk-icon-image uk-margin-small-left " + iconClassName} src={this.props.src} onClick={(e) => { e.preventDefault(); this.handleClick(e) }} data-uk-svg="" />
+                    <div className='uk-width-1-2@l'>
+                        <input
+                            className="uk-checkbox uk-margin-remove"
+                            type="checkbox"
+                            checked={this.state.active}
+                            onClick={(e) => { this.handleClick() }}
+                            onChange={(e) => { this.handleOnChange() }}>
+                        </input>&nbsp;
+                    </div>
+                    <div className='uk-width-1-2@l'>
+                        <img className={"uk-icon-image uk-margin-remove " + iconClassName} src={this.props.src} onClick={(e) => { e.preventDefault(); this.handleClick(e) }} data-uk-svg="" />
+                    </div>
                 </div>
             )
         }
         else {
             return (
                 <div
-                    className="uk-margin-remove-top uk-padding-remove-left">
+                    className="uk-margin-small-top uk-margin-small-bottom uk-flex uk-flex-center uk-width-1-2@l">
                     <input
                         className="uk-checkbox uk-margin-remove"
                         type="checkbox"

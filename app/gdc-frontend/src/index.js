@@ -48,7 +48,7 @@ export function App(){
     if (availableLayersReady){
         return (
             <Provider store={store}>
-                <div className="uk-height-1-1 uk-width-1-1 uk-overflow-hidden uk-margin-remove" data-uk-grid>
+                <div className="uk-height-1-1 uk-width-1-1 uk-overflow-hidden uk-margin-remove uk-animation-fade" data-uk-grid>
                     <SearchPanel/>
                     <LeafletMap/>
                     <LegendPanel/>
@@ -60,7 +60,7 @@ export function App(){
     else {
         return(
             <Provider store={store}>
-                <div className="uk-height-1-1 uk-width-1-1 uk-overflow-hidden  uk-margin-remove">
+                <div className="uk-height-1-1 uk-width-1-1 uk-overflow-hidden uk-margin-remove uk-animation-fade">
                     <Preloader></Preloader>
                 </div>
             </Provider>

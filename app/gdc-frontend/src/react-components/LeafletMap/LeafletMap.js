@@ -50,7 +50,7 @@ export default function LeafletMap(){
     }
 
     return (                    
-        <div className="uk-width-expand uk-height-1-1 uk-padding-remove">                        
+        <div className="uk-width-expand uk-height-1-1 uk-padding-remove uk-animation-fade">                        
             <MapContainer center={[14.5965788, 120.9445403]} zoom={4} options={{ debounceMoveend : true}} style={{ height: "100%", width: "100%", padding: '0px', margin: '0px' }} scrollWheelZoom={true} loadingControl={true}>
                 <BBOXFilterTracking></BBOXFilterTracking>
                 <MapInvalidator></MapInvalidator>

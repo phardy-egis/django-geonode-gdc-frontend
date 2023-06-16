@@ -45,7 +45,7 @@ export default function LegendPanel(props) {
 
     return (
         // HTML ID is required to toggle the panel from Leaflet Map custom control
-        <div className="uk-padding-remove uk-margin-remove uk-height-1-1 uk-width-1-6 gdc-custom-scroller gdc-custom-panel" id="legendpanel">            
+        <div className="uk-padding-remove uk-margin-remove uk-height-1-1 uk-width-1-6 gdc-custom-scroller gdc-custom-panel uk-animation-fade" id="legendpanel">            
             <ul ref={refLegendPanel} id="legend-accordion" multiple="true" className="uk-accordion uk-padding-small uk-width-1-1" data-uk-sortable="handle: .uk-sortable-handle">
                 
                 {/* Element that enable toggling of cluster and BBOX layers */}

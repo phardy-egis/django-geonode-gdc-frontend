@@ -207,7 +207,7 @@ export default function SearchPanel(props) {
                                     <fieldset className="uk-fieldset uk-margin-remove uk-padding-remove">
                                         <label className="uk-form-label uk-text-bolder">Categories</label>
                                         <div className="uk-container uk-margin-remove">
-                                            <div className="uk-margin-remove  uk-child-width-1-2@s" data-uk-grid>
+                                            <div className="uk-margin-remove" data-uk-grid>
                                                 {categoriesFilterDOM}
                                             </div>
                                         </div>
@@ -219,15 +219,15 @@ export default function SearchPanel(props) {
                                     <fieldset className="uk-fieldset uk-margin-remove uk-padding-remove">
                                         <p className="uk-form-label uk-padding-remove uk-margin-remove uk-text-bold" >Created</p>
                                         <label className="uk-form-label" >Before</label>
-                                        <input className="uk-input uk-form-small" type="date" onChange={(e) => { debouncedStartDateFilterChangeHandler(e)}}></input>
+                                        <input className="uk-input uk-form-small uk-padding-remove" type="date" style={{width:"calc( 100% - 10px)"}} onChange={(e) => { debouncedStartDateFilterChangeHandler(e)}}></input>
                                         <label className="uk-form-label" >After</label>
-                                        <input className="uk-input uk-form-small" type="date" onChange={(e) => { debouncedEndDateFilterChangeHandler(e) }}></input>  
+                                        <input className="uk-input uk-form-small uk-padding-remove" type="date" style={{ width: "calc( 100% - 10px)" }} onChange={(e) => { debouncedEndDateFilterChangeHandler(e) }}></input>  
                                     </fieldset>
                                 </div>
                             </div>
 
                             {/* Results list */}
-                            <div className="uk-width-expand uk-margin-top" style={{ paddingLeft: "10px" }}>
+                            <div className="uk-width-expand uk-margin-top uk-animation-fade" style={{ paddingLeft: "10px" }}>
                                 <label className="uk-form-label uk-text-bolder">{resultsCount} Results</label>
                                 {/* <span className="uk-text-light uk-text-small uk-text-muted">({results.length} listed)</span> */}
                                 <div className="uk-width-1-1 uk-overflow-auto gdc-custom-scroller uk-margin-small-top uk-padding-small uk-padding-remove-top uk-padding-remove-bottom uk-padding-remove-left" style={{ height: 'calc( 100vh - 130px )' }}>
