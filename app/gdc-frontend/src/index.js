@@ -12,7 +12,6 @@ import './assets/css/leaflet.loading.css';
 import './assets/css/MarkerCluster.Default.css';
 
 // JS LIBRARIES
-import React from 'react';
 import {render} from 'react-dom';
 import "leaflet-loading";
 import "leaflet-switch-basemap";
@@ -20,61 +19,54 @@ import "leaflet.markercluster";
 import UIkit from 'uikit';
 import Icons from 'uikit/dist/js/uikit-icons';
 import { configureStore } from '@reduxjs/toolkit'
-import { Provider } from 'react-redux';
-
-// JSX COMPONENTS
+import { Provider, useSelector } from 'react-redux';
 import LegendPanel from './react-components/LegendPanel/LegendPanel';
 import SearchPanel from './react-components/SearchPanel/SearchPanel';
-
-// IMGs
-import { toggleFullPageLoader } from './react-components/Utils/FullPageLoader';
-import mainSlice from './redux/slices/MainSlice';
 import LeafletMap from './react-components/LeafletMap/LeafletMap';
-
-// This line enable UIKit icons use in react 
-// (Source: https://stackoverflow.com/questions/50212241/using-uikit-3-icons-in-react)
+import { getAvailableLayerReadinessStatus } from './redux/selectors/MainSliceSelectors';
+import Preloader from './react-components/Utils/Preloader';
+import mainSlice from './redux/slices/MainSlice';
 UIkit.use(Icons);
-
-// Main page loading spinner
-setTimeout(toggleFullPageLoader, 500)
 
 export const store = configureStore({
     reducer: mainSlice.reducer
 })
 
-class App extends React.Component{
+// This component is used to wrap <App> and <Preloader> components inside a similar tag.
+export function AppWrapper(){
+    return (
+        <Provider store={store}>
+            <App></App>
+        </Provider>
+    )
+}
 
-    constructor(props){
-        super(props)
-    }
+export function App(){
 
-    componentDidMount(){
-        document.getElementById("legendpanel").style.width = "0px"
-    }
+    const availableLayersReady = useSelector(state => getAvailableLayerReadinessStatus(state))
 
-    render(){
+    console.log(availableLayersReady)
+    if (availableLayersReady){
         return (
             <Provider store={store}>
-                <div className="uk-child-width-expand uk-grid-column-collapse uk-grid-row-collapse uk-height-1-1 uk-overflow-hidden" data-uk-grid>
-
-                    <div className="uk-width-1-3 uk-height-1-1 gdc-custom-panel" id="searchpanel">
-                        <SearchPanel></SearchPanel>
-                    </div>
-
-                    <div className="uk-width-expand uk-height-1-1">
-                        <LeafletMap></LeafletMap>
-                    </div>
-
-                    <div className="uk-width-1-6 uk-height-1-1 gdc-custom-scroller gdc-custom-panel" id="legendpanel">
-                        <LegendPanel></LegendPanel>
-                    </div>
-
+                <div className="uk-height-1-1 uk-width-1-1 uk-overflow-hidden uk-margin-remove" data-uk-grid>
+                    <SearchPanel/>
+                    <LeafletMap/>
+                    <LegendPanel/>
+                </div>
+            </Provider>
+            
+        )
+    }
+    else {
+        return(
+            <Provider store={store}>
+                <div className="uk-height-1-1 uk-width-1-1 uk-overflow-hidden  uk-margin-remove">
+                    <Preloader></Preloader>
                 </div>
             </Provider>
         )
     }
 }
 
-// Rendering app
-console.log(document.querySelector('#app'))
-render(<App />, document.querySelector('#app'));
+render(<AppWrapper />, document.querySelector('#appwrapper'))

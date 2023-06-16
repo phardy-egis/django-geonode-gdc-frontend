@@ -75,3 +75,15 @@ export function layerExists(state, layerid) {
     }
     
 }
+
+export function getAvailableLayerReadinessStatus(state){
+    return state.availableLayersReady
+}
+
+export function getAvailableLayers(state) {
+    return state.availableLayers
+}
+
+export function getGeoJSONBBOXes(state) {
+    return state.geoJSONBBOXes
+}

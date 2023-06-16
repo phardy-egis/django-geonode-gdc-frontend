@@ -7,6 +7,9 @@ const mainSlice = createSlice({
         filters: [],
         maxZIndex:0,
         activeLayers: [],
+        availableLayersReady: false,
+        availableLayers:[],
+        geoJSONBBOXes:{},
         clusterIsActive: true,
         bboxIsActive: true,
         mapZoomFocus: {
@@ -142,6 +145,14 @@ const mainSlice = createSlice({
 
             state.activeLayers = updatedActiveLayers
             console.log(state.activeLayers)
+        },
+
+        setAvailableLayersReady: (state, action) => {
+            state.availableLayersReady = action.payload
+        },
+
+        setGeoJSONBBOXes: (state, action) => {
+            state.geoJSONBBOXes = action.payload
         }
 
     }
@@ -162,5 +173,8 @@ export const {
     addLayer,
     removeLayerById,
     setLayerOpacity,
-    toggleLayerVisibility
+    toggleLayerVisibility,
+    setAvailableLayers,
+    setAvailableLayersReady,
+    setGeoJSONBBOXes
 } = mainSlice.actions

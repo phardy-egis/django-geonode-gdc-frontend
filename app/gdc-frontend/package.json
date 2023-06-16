@@ -13,6 +13,7 @@
     "esri-leaflet": "^3.0.10",
     "esri-leaflet-vector": "^4.0.0",
     "flatpickr": "^4.6.13",
+    "geojson-validation": "^1.0.2",
     "jquery": "^3.6.1",
     "leaflet": "^1.9.4",
     "leaflet-loading": "^0.1.24",

@@ -44,24 +44,26 @@ export default function LegendPanel(props) {
     }
 
     return (
-        <ul ref={refLegendPanel} id="legend-accordion" multiple="true" className="uk-accordion uk-padding-small uk-width-1-1" data-uk-sortable="handle: .uk-sortable-handle">
-            
-            {/* Element that enable toggling of cluster and BBOX layers */}
-            <li className="uk-open uk-padding-small uk-background-muted">
-                <a className="uk-accordion-title uk-text-small uk-text-bolder" href="#"><span className="uk-margin-small-right uk-text-center" data-uk-icon="icon: table"></span>Search panel results locations</a>
-                <div className="uk-accordion-content uk-text-small">
-                    <div className="uk-margin uk-grid-small uk-child-width-auto uk-grid">
-                        <label className="uk-form"><input className="uk-checkbox" type="checkbox" onChange={(e) => { dispatch(toggleClusterStatus(e.target.checked)) }} checked={clusterStatus} />  Centroids (center point of datasets)</label>
+        // HTML ID is required to toggle the panel from Leaflet Map custom control
+        <div className="uk-padding-remove uk-margin-remove uk-height-1-1 uk-width-1-6 gdc-custom-scroller gdc-custom-panel" id="legendpanel">            
+            <ul ref={refLegendPanel} id="legend-accordion" multiple="true" className="uk-accordion uk-padding-small uk-width-1-1" data-uk-sortable="handle: .uk-sortable-handle">
+                
+                {/* Element that enable toggling of cluster and BBOX layers */}
+                <li className="uk-open uk-padding-small uk-background-muted">
+                    <a className="uk-accordion-title uk-text-small uk-text-bolder" href="#"><span className="uk-margin-small-right uk-text-center" data-uk-icon="icon: table"></span>Search panel results locations</a>
+                    <div className="uk-accordion-content uk-text-small">
+                        <div className="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+                            <label className="uk-form"><input className="uk-checkbox" type="checkbox" onChange={(e) => { dispatch(toggleClusterStatus(e.target.checked)) }} checked={clusterStatus} />  Centroids (center point of datasets)</label>
+                        </div>
+                        <div className="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+                            <label className="uk-form"><input className="uk-checkbox" type="checkbox" onChange={(e) => { dispatch(toggleBBOXStatus(e.target.checked)) }} checked={bboxStatus} />  Bounding boxes (extent rectangle for datasets)</label>
+                        </div>
                     </div>
-                    <div className="uk-margin uk-grid-small uk-child-width-auto uk-grid">
-                        <label className="uk-form"><input className="uk-checkbox" type="checkbox" onChange={(e) => { dispatch(toggleBBOXStatus(e.target.checked)) }} checked={bboxStatus} />  Bounding boxes (extent rectangle for datasets)</label>
-                    </div>
-                </div>
-            </li>
+                </li>
 
-            {/* Element that enables toggling of layers */}
-            {legendItems}
-
-        </ul>
+                {/* Element that enables toggling of layers */}
+                {legendItems}
+            </ul>
+        </div>
     )
 }
