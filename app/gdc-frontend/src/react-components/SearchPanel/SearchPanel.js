@@ -164,7 +164,7 @@ export default function SearchPanel(props) {
     for (let index = 0; index < categories.length; index++) {
         const category = categories[index];
         categoriesFilterDOM.push(
-            <IconCheckBox key={category.id} src={category.icon_img} name={category.gn_description_en} onChange={() => { debouncedCategoryChangeHandler(category.id)}}></IconCheckBox>
+            <IconCheckBox key={category.id} src={category.icon_img} name={category.gn_description_en} onChange={(e) => { toggleCategoryFilter({id:category.id, checked:e.target.checked})}}></IconCheckBox>
         )
     }
 
@@ -189,7 +189,7 @@ export default function SearchPanel(props) {
                     <div className="uk-container uk-width-1-1 uk-margin-remove uk-padding-remove">
                         <div data-uk-grid>
                             {/* Filters */}
-                            <div className="uk-width-1-4@s uk-margin-top uk-overflow-hidden">
+                            <div className="uk-width-1-4@s uk-width-auto uk-margin-top uk-overflow-hidden">
 
                                 {/* Layer extend filter */}
                                 <div>
@@ -227,10 +227,10 @@ export default function SearchPanel(props) {
                             </div>
 
                             {/* Results list */}
-                            <div className="uk-width-expand uk-margin-top uk-animation-fade" style={{ paddingLeft: "10px" }}>
+                            <div className="uk-width-expand uk-margin-top uk-animation-fade uk-padding-remove">
                                 <label className="uk-form-label uk-text-bolder">{resultsCount} Results</label>
                                 {/* <span className="uk-text-light uk-text-small uk-text-muted">({results.length} listed)</span> */}
-                                <div className="uk-width-1-1 uk-overflow-auto gdc-custom-scroller uk-margin-small-top uk-padding-small uk-padding-remove-top uk-padding-remove-bottom uk-padding-remove-left" style={{ height: 'calc( 100vh - 130px )' }}>
+                                <div className="uk-width-1-1 uk-overflow-auto gdc-custom-scroller uk-margin-small-top uk-padding-small uk-padding-remove-top uk-padding-remove-bottom" style={{ height: 'calc( 100vh - 130px )' }}>
                                     {resultsDOM}
                                     {nextLoaderDOM}
                                 </div>

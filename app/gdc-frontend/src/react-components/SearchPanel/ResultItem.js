@@ -65,16 +65,19 @@ export default function ResultItem(props) {
     }
 
     return (
-        <div className="uk-animation-fade uk-margin-small-top uk-margin-small-bottom uk-padding-small uk-card uk-card-body gdc-custom-border uk-transition-toggle uk-overflow-hidden" >
-            <p className="uk-margin-small uk-text-small uk-text-bolder">{props.properties.title}</p>
-            <ul className="uk-margin-small uk-iconnav">
-                <li><a href="#mainmodal" data-uk-tooltip="Display layer information" data-uk-icon="icon: info"></a></li>
-                <li><a href={process.env.REACT_APP_SITEURL + props.properties.detail_url} data-uk-icon="icon: cloud-download" data-uk-tooltip="Download layer" target="_blank" rel="noreferrer noopener"></a></li>
-                {layerAddButtonDom}
-            </ul>
-            <div className="uk-padding-remove">
-                <p className="uk-text-justify uk-text-small">{props.properties.abstract}</p>
+        <div className='uk-padding-remove uk-margin-remove uk-transition-toggle' tabIndex="0">
+            <div className="uk-animation-fade uk-margin-small-top uk-margin-small-bottom uk-padding-small uk-card uk-card-body gdc-custom-border uk-transition-toggle uk-transition-scale-up uk-overflow-hidden" >
+                <p className="uk-margin-small uk-text-small uk-text-bolder">{props.properties.title}</p>
+                <ul className="uk-margin-small uk-iconnav">
+                    <li><a href="#mainmodal" data-uk-tooltip="Display layer information" data-uk-icon="icon: info"></a></li>
+                    <li><a href={process.env.REACT_APP_SITEURL + props.properties.detail_url} data-uk-icon="icon: cloud-download" data-uk-tooltip="Download layer" target="_blank" rel="noreferrer noopener"></a></li>
+                    {layerAddButtonDom}
+                </ul>
+                <div className="uk-padding-remove">
+                    <p className="uk-text-justify uk-text-small">{props.properties.abstract}</p>
+                </div>
             </div>
         </div>
+
     )
 }

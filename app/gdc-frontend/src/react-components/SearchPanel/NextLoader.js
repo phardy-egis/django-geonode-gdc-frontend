@@ -24,8 +24,8 @@ export default function NextLoader(props){
     }, [ready])
 
     return (
-        <div ref={refNextLoader} className="uk-animation-shake uk-margin-small-top uk-margin-small-bottom uk-padding-small uk-card uk-card-body gdc-custom-border uk-transition-toggle uk-overflow-hidden" >
-            <p className="uk-margin-small uk-text-small"><span data-uk-spinner="ratio: 0.6"></span>&nbsp;&nbsp;&nbsp;Loading more results...</p>
+        <div ref={refNextLoader} className="uk-animation-shake uk-margin-small-top uk-margin-small-bottom uk-padding-small uk-card uk-card-body uk-overflow-hidden uk-flex uk-flex-center" >
+            <p className="uk-margin-small uk-text-small uk-text-muted"><span data-uk-spinner="ratio: 0.6"></span>&nbsp;&nbsp;&nbsp;Loading more results...</p>
         </div>
     )
 }

@@ -46,8 +46,8 @@ export default class IconCheckBox extends React.Component {
                             className="uk-checkbox uk-margin-remove"
                             type="checkbox"
                             checked={this.state.active}
-                            onClick={(e) => { this.handleClick() }}
-                            onChange={(e) => { this.handleOnChange() }}>
+                            onClick={(e) => { this.handleClick(e) }}
+                            onChange={(e) => { this.handleOnChange(e) }}>
                         </input>&nbsp;
                     </div>
                     <div className='uk-width-1-2@l'>
@@ -64,8 +64,8 @@ export default class IconCheckBox extends React.Component {
                         className="uk-checkbox uk-margin-remove"
                         type="checkbox"
                         checked={this.state.active}
-                        onClick={(e) => { this.handleClick() }}
-                        onChange={(e) => { this.handleOnChange() }}>
+                        onClick={(e) => { this.handleClick(e) }}
+                        onChange={(e) => { this.handleOnChange(e) }}>
                     </input>
                     <label className="uk-form-label">{this.props.name}</label>
                 </div>

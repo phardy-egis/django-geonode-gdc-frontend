@@ -40,16 +40,21 @@ const mainSlice = createSlice({
 
         // This function toggle the map extent filter
         setCategoryFilter: (state, action) => {
-            const filtered = state.filters.filter(filter => (filter.key !== 'category__identifier' && filter.value !== action.payload));
+            const filters = [...state.filters]
+            var filtered = filters.filter(filter => (filter.key !== 'category__identifier' && filter.value !== action.payload.id))
+            const existing_filter = filters.filter(filter => (filter.key === 'category__identifier' && filter.value === action.payload.id))
+
             // IF category filter is not existing we add it
-            if (JSON.stringify(filtered) === JSON.stringify(state.filters)){
-                state.filters = [...filtered, { key: 'category__identifier', value: action.payload }]                    
+            if (action.payload.checked){
+                console.log('adding cat')
+                state.filters = [...filters, { key: 'category__identifier', value: action.payload.id }]                    
             }
             // IF category filter is existing we remove it
             else {
+                console.log('removing cat')
                 state.filters = filtered
             }
-            // console.log(state.filters)
+
         },
 
         setStartDateFilter: (state, action) => {
