@@ -108,7 +108,6 @@ export default function SearchPanel(props) {
 
     function handleNextLoader(nextURL){
         const dataLightFetcher = new FetchWrapper(nextURL, [], {}, true)
-        // console.log('fetch next result')
         dataLightFetcher.fetch()
             .then((res) => res.json())
             .then((data) => {

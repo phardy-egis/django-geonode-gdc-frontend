@@ -46,12 +46,12 @@ const mainSlice = createSlice({
 
             // IF category filter is not existing we add it
             if (action.payload.checked){
-                console.log('adding cat')
+                // console.log('adding cat')
                 state.filters = [...filters, { key: 'category__identifier', value: action.payload.id }]                    
             }
             // IF category filter is existing we remove it
             else {
-                console.log('removing cat')
+                // console.log('removing cat')
                 state.filters = filtered
             }
 

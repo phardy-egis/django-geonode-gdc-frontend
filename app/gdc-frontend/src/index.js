@@ -51,7 +51,7 @@ export function App(){
                 <div className="uk-height-1-1 uk-width-1-1 uk-overflow-hidden uk-margin-remove uk-animation-fade" data-uk-grid>
                     <SearchPanel/>
                     <LeafletMap/>
-                    <LegendPanel/>
+                    <LegendPanel multiple={true}/>
                 </div>
             </Provider>
             

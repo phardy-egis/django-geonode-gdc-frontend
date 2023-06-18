@@ -24,8 +24,8 @@ export default function LegendPanel(props) {
             const UIkitComponent = UIkit.accordion(refLegendPanel.current, {
                 targets: props.targets,
                 active: props.active,
-                collapsible: true,
-                multiple: true,
+                collapsible: props.collapsible,
+                multiple: props.multiple,
                 animation: props.animation,
                 transition: props.transition,
                 duration: props.duration

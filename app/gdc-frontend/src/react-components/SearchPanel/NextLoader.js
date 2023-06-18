@@ -15,7 +15,6 @@ export default function NextLoader(props){
         let observer = new IntersectionObserver((entries) => {
             const [entry] = entries;
             if(entry.isIntersecting){
-                console.log('NEXT intersected')
                 props.onIntersect(props.nextURL)
             }
         }, options);

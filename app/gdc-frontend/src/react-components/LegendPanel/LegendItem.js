@@ -20,7 +20,6 @@ export default function LegendItem (props) {
     const layerStyle = useSelector(state => getActiveLayerStyleById(state, props.layerid))
     
     function handleZoomExtentClick() {
-        // console.log('zoom extent')
         return null
     }
 
