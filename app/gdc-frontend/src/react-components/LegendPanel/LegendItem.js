@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import UIkit from 'uikit';
 import Icons from 'uikit/dist/js/uikit-icons';
-import { getActiveLayerById} from '../../redux/selectors/MainSliceSelectors';
+import { getActiveLayerStyleById} from '../../redux/selectors/MainSliceSelectors';
 import ImgPlus from '../Utils/ImgPlus';
 import { removeLayerById, setLayerOpacity, toggleLayerVisibility } from '../../redux/slices/MainSlice';
 import { debounce } from 'lodash';
