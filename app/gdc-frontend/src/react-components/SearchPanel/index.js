@@ -162,7 +162,7 @@ export default function SearchPanel(props) {
     for (let index = 0; index < categories.length; index++) {
         const category = categories[index];
         categoriesFilterDOM.push(
-            <IconCheckBox key={category.id} src={category.icon_img} name={category.gn_description_en} onChange={(e) => { toggleCategoryFilter({id:category.id, checked:e.target.checked})}}></IconCheckBox>
+            <IconCheckBox key={category.id} src={category.icon_img} name={category.gn_description_en} onChange={(e) => { toggleCategoryFilter({id:category.identifier, checked:e.target.checked})}}></IconCheckBox>
         )
     }
 
