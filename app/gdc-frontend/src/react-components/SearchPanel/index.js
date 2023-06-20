@@ -42,7 +42,6 @@ export default function SearchPanel(props) {
     const searchParams = useSelector(state => getSearchParams(state))
     const [resultsReady, setResultsReady] = useState(true)
     const [resultsCount, setResultsCount] = useState(0)
-    const [loadingProgress, setLoadingProgress] = useState(false)
     const [results, setResults] = useState([])
     const [nextURL, setNextURL] = useState(false)
 

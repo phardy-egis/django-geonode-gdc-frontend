@@ -9,8 +9,8 @@ import { MapContainer } from 'react-leaflet/esm/MapContainer'
 import { Pane } from 'react-leaflet/esm/Pane'
 import { GeoJSON } from 'react-leaflet/esm/GeoJSON'
 
-import { useSelector } from 'react-redux';
-import { getActiveLayersWithoutStyle, getAvailableLayerReadinessStatus, getBBOXStatus, getGeoJSONBBOXes } from '../../redux/selectors/MainSliceSelectors';
+import { useSelector, shallowEqual } from 'react-redux';
+import { getActiveLayersOrderedList, getAvailableLayerReadinessStatus, getBBOXStatus, getGeoJSONBBOXes } from '../../redux/selectors/MainSliceSelectors';
 
 // Custom Leaflet components
 import CentersClustersLayer from './CentersClustersLayer';
@@ -26,7 +26,7 @@ export default function LeafletMap(){
     const geoJSONBBOXesData = useSelector(state => getGeoJSONBBOXes(state))
     const availableLayersReadiness = useSelector(state => getAvailableLayerReadinessStatus(state))
     const bboxLayerActive = useSelector(state => getBBOXStatus(state))
-    const activeLayers = useSelector(state => getActiveLayersWithoutStyle(state))
+    const activeLayers = useSelector(state => getActiveLayersOrderedList(state))
 
 
 
@@ -55,8 +55,8 @@ export default function LeafletMap(){
     if (activeLayers.length > 0){
         var layerDOM = []
         for (let index = 0; index < activeLayers.length; index++) {
-            const layer = activeLayers[index];
-            layerDOM.push(<GeonodeWMSLayer key={layer.alternate} layer={layer}/>)           
+            const layerid = activeLayers[index];
+            layerDOM.push(<GeonodeWMSLayer key={layerid} layerid={layerid}/>)           
         }
     }
 

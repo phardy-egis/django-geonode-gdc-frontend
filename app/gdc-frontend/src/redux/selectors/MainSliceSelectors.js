@@ -34,18 +34,10 @@ export function getBBOXStatus(state) {
  * @param  {object} state           The REDUX state object for current store
  * @return {object}                 Layers properties without style
  */
-export function getActiveLayersWithoutStyle(state) {
-    const layers = state.activeLayers
-    const layersWithoutStyle = []
-    for (let index = 0; index < layers.length; index++) {
-        const layer = layers[index];
-        layersWithoutStyle.push({
-            ...layer,
-            style: null,
-        })
-        
-    }
-    return layersWithoutStyle
+export function getActiveLayersOrderedList(state) {
+    var activeLayersOrdered = state.activeLayers.map(activeLayer => activeLayer.id).sort()
+    console.log(activeLayersOrdered)
+    return activeLayersOrdered
 }
 
 /**
@@ -54,9 +46,9 @@ export function getActiveLayersWithoutStyle(state) {
  * @param  {string} layerid         Geonode layer ID to be selected
  * @return {object}                 Dict containing the layerProps
  */
-export function getActiveLayerStyleById(state, layerid) {
+export function getActiveLayerById(state, layerid) {
     const layer = state.activeLayers.filter(layer => (layer.id == layerid))[0]
-    return layer.style
+    return layer
 }
 
 /**
