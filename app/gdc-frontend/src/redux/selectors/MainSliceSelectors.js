@@ -40,12 +40,32 @@ export function getActiveLayersWithoutStyle(state) {
     for (let index = 0; index < layers.length; index++) {
         const layer = layers[index];
         layersWithoutStyle.push({
-            ...layer,
-            style: null,
+            id: layer.id,
+            details:layer.details,
         })
         
     }
     return layersWithoutStyle
+}
+
+/**
+ * This function returns an activeLayer using its ID
+ * @param  {object} state           The REDUX state object for current store
+ * @return {object}                 Layers properties without style
+ */
+export function getActiveLayerById(state, layerId) {
+    const layer = state.activeLayers.filter(layer => layer.id === layerId)[0]
+    return layer
+}
+
+/**
+ * This function an ordered list of activeLayers IDs
+ * @param  {object} state           The REDUX state object for current store
+ * @return {object}                 Ordered layer list
+ */
+export function getActiveLayersOrderedIDList(state) {
+    const layers = state.activeLayers.map(layer => layer.id).sort()
+    return layers
 }
 
 /**
