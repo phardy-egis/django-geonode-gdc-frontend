@@ -2,9 +2,15 @@ import L from 'leaflet';
 import "leaflet-loading";
 import "leaflet-switch-basemap";
 import "leaflet.markercluster";
+import { useMap } from 'react-leaflet/esm/hooks'
+import { useState, useEffect } from 'react';
+
+
+// import { createLegendPanelToggleControl, createSearchPanelToggleControl } from './CustomControls';
+
 
 // Settings for the LEGEND panel toggling control
-export function createLegendPanelToggleControl(map){
+export function createLegendPanelToggleControl(map) {
 
     const legendPanelToggleControl = L.Control.extend({
 
@@ -62,7 +68,7 @@ export function createSearchPanelToggleControl(map) {
 function openLegendPanel(target_map) {
     document.getElementById("legendpanel").style.width = "16.67%"
     document.getElementById("legendpanel").style.opacity = "100"
-    
+
 }
 
 function togglePanel(target_map, side) {
@@ -75,7 +81,7 @@ function togglePanel(target_map, side) {
             document.getElementById("searchpanel").style.width = "0px"
             document.getElementById("searchpanel").style.opacity = "0"
         };
-        
+
     }
     else if (side == "right") {
         if (document.getElementById("legendpanel").style.width == "0px") {
@@ -84,7 +90,26 @@ function togglePanel(target_map, side) {
         else {
             document.getElementById("legendpanel").style.width = "0px"
             document.getElementById("legendpanel").style.opacity = "0"
-            
+
         };
     }
+}
+
+// This function renders a Spinner control showing the loading state of the layer
+export default function PanelsToggleControls() {
+
+    const map = useMap()
+    const [ready, setReady] = useState(false)
+
+    useEffect(() => {
+        if (!ready) {
+            map.addControl(createLegendPanelToggleControl(map));
+            map.addControl(createSearchPanelToggleControl(map));
+            map.addControl(new L.Control.loading());
+            setReady(true)
+        }
+
+    }, [ready])
+
+    return null
 }
