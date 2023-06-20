@@ -13,10 +13,10 @@ export default function LegendPanel(props) {
 
     // Allow redux dispatch function to be called
     const dispatch = useDispatch()
+    const refLegendPanel = useRef(null);
     const clusterStatus = useSelector(state => getClusterStatus(state))
     const bboxStatus = useSelector(state => getBBOXStatus(state))
     const activeLayers = useSelector(state => getActiveLayersWithoutStyle(state), shallowEqual)
-    const refLegendPanel = useRef(null);
 
     useEffect(()=>{
         if (refLegendPanel.current) {
@@ -38,11 +38,12 @@ export default function LegendPanel(props) {
     // the loop. it'll return array of react node.
     var legendItems = []
     if (activeLayers !== []) {
-        for (const layer of activeLayers) {
-            legendItems.push(<LegendItem key={layer.id} layerid={layer.id} title={layer.details.title} alternate={layer.details.alternate} detail_url={layer.details.detail_url} bbox={layer.bbox}></LegendItem>)
+        for (const layerid of activeLayers) {
+            legendItems.push(<LegendItem key={layerid} layerid={layerid}></LegendItem>)
         }
     }
 
+    console.log('legend rendered')
     return (
         // HTML ID is required to toggle the panel from Leaflet Map custom control
         <div className="uk-padding-remove uk-margin-remove uk-height-1-1 uk-width-1-6 gdc-custom-scroller gdc-custom-panel uk-animation-fade" id="legendpanel">            

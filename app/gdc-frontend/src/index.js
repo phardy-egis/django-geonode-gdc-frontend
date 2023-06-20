@@ -32,6 +32,11 @@ export const store = configureStore({
     reducer: mainSlice.reducer
 })
 
+// // Used to track store changes
+// store.subscribe(() => {
+//     console.log("store changed!", store.getState());
+// });
+
 // This component is used to wrap <App> and <Preloader> components inside a similar tag.
 export function AppWrapper(){
     return (
