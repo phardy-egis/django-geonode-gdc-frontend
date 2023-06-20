@@ -38,12 +38,12 @@ export default function LegendPanel(props) {
     // the loop. it'll return array of react node.
     var legendItems = []
     if (activeLayers !== []) {
-        for (const layerid of activeLayers) {
+        for (let index = 0; index < activeLayers.length; index++) {
+            const layerid = activeLayers[index];
             legendItems.push(<LegendItem key={layerid} layerid={layerid}></LegendItem>)
         }
     }
 
-    console.log('legend rendered')
     return (
         // HTML ID is required to toggle the panel from Leaflet Map custom control
         <div className="uk-padding-remove uk-margin-remove uk-height-1-1 uk-width-1-6 gdc-custom-scroller gdc-custom-panel uk-animation-fade" id="legendpanel">            

@@ -30,6 +30,8 @@ export default function GeonodeWMSLayer(props) {
 
     // Setting opacity depending on visibility and
     useEffect(() => {
+        console.log('opacity updated on layer')
+        console.log(props.layerid)
         if (layerStyle.visibility) {
             setDisplayOpacity(layerStyle.opacity)
         }
@@ -41,6 +43,7 @@ export default function GeonodeWMSLayer(props) {
     // DOM returned
     return (
         <WMSTileLayer
+            key={props.layerid}
             url={url.href.split('?')[0]}
             params={wmsOptions}
             opacity={displayOpacity}>

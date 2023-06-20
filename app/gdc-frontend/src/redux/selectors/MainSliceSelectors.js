@@ -104,6 +104,10 @@ export function getAvailableLayers(state) {
     return state.availableLayers
 }
 
+export function getActiveLayers(state) {
+    return state.getActiveLayers
+}
+
 export function getGeoJSONBBOXes(state) {
     return state.geoJSONBBOXes
 }
