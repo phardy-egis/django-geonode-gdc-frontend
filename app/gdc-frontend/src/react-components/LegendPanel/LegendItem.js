@@ -52,7 +52,7 @@ export default function LegendItem (props) {
     }
 
     var classicon = "uk-text-default"
-    if (!layer.style.visibility) {
+    if (!layerStyle.visibility) {
         classicon = "uk-text-danger"
     }
 
@@ -68,7 +68,7 @@ export default function LegendItem (props) {
                     <li><a href="#" onClick={handleZoomExtentClick} data-uk-icon="icon: search" data-uk-tooltip="title: Zoom to extent; pos: bottom"></a></li>
                     <li><a className={classicon} href="#" onClick={handleVisibilityChange} data-uk-icon="icon: ban" data-uk-tooltip="title: Toggle visibility; pos: bottom"></a></li>
                     <li><a href="#" onClick={handleDelete} data-uk-icon="icon: trash" data-uk-tooltip="title: Remove; pos: bottom"></a></li>
-                    <li><a href={layer.details.detail_url} data-uk-icon="icon: cloud-download" data-uk-tooltip="title: Download layer; pos: bottom" target="_blank" rel="noreferrer noopener"></a></li>
+                    <li><a href={props.details.detail_url} data-uk-icon="icon: cloud-download" data-uk-tooltip="title: Download layer; pos: bottom" target="_blank" rel="noreferrer noopener"></a></li>
                 </ul>
 
                 <div className="uk-margin">
@@ -76,8 +76,8 @@ export default function LegendItem (props) {
                 </div>
 
                 <div data-uk-tooltip="Click to enlarge" data-uk-lightbox>
-                    <a data-type="image" href={process.env.REACT_APP_SITEURL + "geoserver/ows?&LAYER=" + layer.details.alternate + "&SERVICE=WMS&REQUEST=GetLegendGraphic&FORMAT=image/png&transparent=false&format=image/png&LEGEND_OPTIONS=forceLabels:on;dpi=91;"} >
-                        <ImgPlus key={"thumbnail_" + props.layerid} src={process.env.REACT_APP_SITEURL + "geoserver/ows/?LAYER=" + layer.details.alternate + "&SERVICE=WMS&REQUEST=GetLegendGraphic&FORMAT=image/png&transparent=true&format=image/png&LEGEND_OPTIONS=forceLabels:on;dpi=91;"} width="500" height="500" alt="Legend"></ImgPlus>
+                    <a data-type="image" href={process.env.REACT_APP_SITEURL + "geoserver/ows?&LAYER=" + props.details.alternate + "&SERVICE=WMS&REQUEST=GetLegendGraphic&FORMAT=image/png&transparent=false&format=image/png&LEGEND_OPTIONS=forceLabels:on;dpi=91;"} >
+                        <ImgPlus key={"thumbnail_" + props.layerid} src={process.env.REACT_APP_SITEURL + "geoserver/ows/?LAYER=" + props.details.alternate + "&SERVICE=WMS&REQUEST=GetLegendGraphic&FORMAT=image/png&transparent=true&format=image/png&LEGEND_OPTIONS=forceLabels:on;dpi=91;"} width="500" height="500" alt="Legend"></ImgPlus>
                     </a>
                 </div>
 

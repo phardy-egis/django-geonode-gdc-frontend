@@ -38,8 +38,8 @@ export default function LegendPanel(props) {
     // the loop. it'll return array of react node.
     var legendItems = []
     if (activeLayers !== []) {
-        for (const layerid of activeLayers) {
-            legendItems.push(<LegendItem key={layerid} layerid={layerid}></LegendItem>)
+        for (const layer of activeLayers) {
+            legendItems.push(<LegendItem key={layer.id} layerid={layer.id} details={layer.details}></LegendItem>)
         }
     }
 
