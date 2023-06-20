@@ -1,20 +1,28 @@
 import { useSelector } from "react-redux"
 import { getActiveLayerStyleById } from "../../../redux/selectors/MainSliceSelectors"
 import { WMSTileLayer } from 'react-leaflet/esm/WMSTileLayer'
-import { parseQueryStringToDictionary } from "../../Utils/Utilities"
+import { openLegendPanel } from "./PanelsToggleControls"
+import { useEffect, useState } from "react"
 
 
 export default function GeonodeWMSLayer(props) {
 
     // Opacity selector
     const layerStyle = useSelector(state => getActiveLayerStyleById(state, props.layer.id))
+    const [ready, setReady] = useState(false)
 
     const url = new URL(props.layer.details.links.filter(link => (link.extension === 'png' && link.link_type === 'image' && link.name === 'PNG' && link.mime === 'image/png'))[0].url)
-    const params = parseQueryStringToDictionary(url.search)
+
+    useEffect(()=>{
+        if(!ready){
+            openLegendPanel()
+            setReady(true)
+        }
+    }, [ready])
 
     // WMS Option used to display the request layer
     var wmsOptions = {
-        ...params,
+        layers: props.details.alternate,
         transparent: true,
         format: 'image/png',
         maxZoom: 20,
@@ -32,7 +40,7 @@ export default function GeonodeWMSLayer(props) {
     // DOM returned
     return (
         <WMSTileLayer
-            url={process.env.REACT_APP_SITEURL + 'geoserver/ows'}
+            url={url}
             params={wmsOptions}
             opacity={displayOpacity}>
         </WMSTileLayer>

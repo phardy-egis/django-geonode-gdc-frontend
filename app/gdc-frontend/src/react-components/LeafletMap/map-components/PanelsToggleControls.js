@@ -25,7 +25,7 @@ export function createLegendPanelToggleControl(map) {
             container.value = "        Legend >   ";
 
             container.onclick = function (e) {
-                togglePanel(map, "right")
+                togglePanel("right")
             }
 
             return container;
@@ -53,7 +53,7 @@ export function createSearchPanelToggleControl(map) {
             container.value = "   < Search        ";
 
             container.onclick = function (e) {
-                togglePanel(map, "left")
+                togglePanel("left")
             }
 
             return container;
@@ -65,13 +65,13 @@ export function createSearchPanelToggleControl(map) {
 
 
 // Settings for the SEARCH panel toggling control
-function openLegendPanel(target_map) {
+export function openLegendPanel() {
     document.getElementById("legendpanel").style.width = "16.67%"
     document.getElementById("legendpanel").style.opacity = "100"
 
 }
 
-function togglePanel(target_map, side) {
+function togglePanel(side) {
     if (side == "left") {
         if (document.getElementById("searchpanel").style.width == "0px") {
             document.getElementById("searchpanel").style.width = "33.33%"
@@ -85,7 +85,7 @@ function togglePanel(target_map, side) {
     }
     else if (side == "right") {
         if (document.getElementById("legendpanel").style.width == "0px") {
-            openLegendPanel(target_map)
+            openLegendPanel()
         }
         else {
             document.getElementById("legendpanel").style.width = "0px"
