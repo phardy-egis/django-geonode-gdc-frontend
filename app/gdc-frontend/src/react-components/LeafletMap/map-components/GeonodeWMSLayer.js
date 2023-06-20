@@ -40,7 +40,7 @@ export default function GeonodeWMSLayer(props) {
     // DOM returned
     return (
         <WMSTileLayer
-            url={url}
+            url={url.toString()}
             params={wmsOptions}
             opacity={displayOpacity}>
         </WMSTileLayer>
