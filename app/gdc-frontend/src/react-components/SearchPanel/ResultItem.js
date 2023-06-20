@@ -6,7 +6,7 @@ import UIkit from 'uikit';
 import Icons from 'uikit/dist/js/uikit-icons';
 import FetchWrapper from '../Utils/customFetch';
 import { useDispatch, useSelector } from 'react-redux';
-import { addLayer } from '../../redux/slices/MainSlice';
+import { addLayer, setZoomFocus } from '../../redux/slices/MainSlice';
 import { layerExists } from '../../redux/selectors/MainSliceSelectors';
 import L from 'leaflet';
 UIkit.use(Icons);
@@ -32,6 +32,9 @@ export default function ResultItem(props) {
                 )
                 // Removing the loading spinner
                 setLayerLoading(false)
+
+                // Zooming onto layer extent
+                dispatch( setZoomFocus(props.geojson) )
             })
             .catch(function (error) {
                 UIkit.notification(`Error. ${error}`, { status: 'danger' })

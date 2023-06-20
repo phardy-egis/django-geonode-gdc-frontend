@@ -12,10 +12,7 @@ const mainSlice = createSlice({
         geoJSONBBOXes:{},
         clusterIsActive: true,
         bboxIsActive: true,
-        mapZoomFocus: {
-            consumed: true,
-            bbox: null
-        }
+        zoomFocus: null,
     },
     reducers: {
         // This function sets the value of search filter
@@ -157,6 +154,10 @@ const mainSlice = createSlice({
 
         setGeoJSONBBOXes: (state, action) => {
             state.geoJSONBBOXes = action.payload
+        },
+
+        setZoomFocus: (state, action) => {
+            state.zoomFocus = action.payload
         }
 
     }
@@ -180,5 +181,6 @@ export const {
     toggleLayerVisibility,
     setAvailableLayers,
     setAvailableLayersReady,
-    setGeoJSONBBOXes
+    setGeoJSONBBOXes,
+    setZoomFocus
 } = mainSlice.actions

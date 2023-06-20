@@ -111,3 +111,7 @@ export function getActiveLayers(state) {
 export function getGeoJSONBBOXes(state) {
     return state.geoJSONBBOXes
 }
+
+export function getZoomFocus(state) {
+    return state.zoomFocus
+}
