@@ -1,7 +1,7 @@
 import L from 'leaflet';
 import { useMap } from 'react-leaflet/esm/hooks'
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import { getGeoJSONBBOXes, getClusterStatus } from '../../redux/selectors/MainSliceSelectors';
 
 import blueMarker from '../../assets/img/layer_position_icon_blue.png'
@@ -12,8 +12,8 @@ export default function CentersClustersLayer() {
     const map = useMap()
     const [ready, setReady] = useState(false)
     const [markers, setMarkers] = useState(null)
-    const geoJSONBBOXesData = useSelector(state => getGeoJSONBBOXes(state))
-    const clusterEnabled = useSelector(state => getClusterStatus(state))
+    const geoJSONBBOXesData = useSelector(state => getGeoJSONBBOXes(state), shallowEqual)
+    const clusterEnabled = useSelector(state => getClusterStatus(state), shallowEqual)
 
     // Effect used to create the cluster marker layer
     useEffect(() => {

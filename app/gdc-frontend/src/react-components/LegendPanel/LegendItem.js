@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import UIkit from 'uikit';
 import Icons from 'uikit/dist/js/uikit-icons';
 import { getActiveLayerStyleById} from '../../redux/selectors/MainSliceSelectors';
@@ -17,7 +17,7 @@ export default function LegendItem (props) {
 
     const [hidden, setHidden] = useState(false)
     const dispatch = useDispatch()
-    const layerStyle = useSelector(state => getActiveLayerStyleById(state, props.layerid))
+    const layerStyle = useSelector(state => getActiveLayerStyleById(state, props.layerid), shallowEqual)
     
     function handleZoomExtentClick() {
         return null

@@ -1,7 +1,7 @@
 // Import UIKIT (front-end css framework)
 import UIkit from 'uikit';
 import Icons from 'uikit/dist/js/uikit-icons';
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch, shallowEqual } from 'react-redux'
 import LegendItem from './LegendItem';
 import { getClusterStatus, getBBOXStatus, getActiveLayersWithoutStyle } from '../../redux/selectors/MainSliceSelectors';
 import { toggleBBOXStatus, toggleClusterStatus } from '../../redux/slices/MainSlice';
@@ -15,7 +15,7 @@ export default function LegendPanel(props) {
     const dispatch = useDispatch()
     const clusterStatus = useSelector(state => getClusterStatus(state))
     const bboxStatus = useSelector(state => getBBOXStatus(state))
-    const activeLayers = useSelector(state => getActiveLayersWithoutStyle(state))
+    const activeLayers = useSelector(state => getActiveLayersWithoutStyle(state), shallowEqual)
     const refLegendPanel = useRef(null);
 
     useEffect(()=>{

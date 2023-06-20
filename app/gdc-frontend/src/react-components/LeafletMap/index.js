@@ -56,7 +56,7 @@ export default function LeafletMap(){
         var layerDOM = []
         for (let index = 0; index < activeLayers.length; index++) {
             const layer = activeLayers[index];
-            layerDOM.push(<GeonodeWMSLayer key={layer.alternate} layer={layer}/>)           
+            layerDOM.push(<GeonodeWMSLayer key={layer.alternate} layerid={layer.id} details={layer.details}/>)           
         }
     }
 
