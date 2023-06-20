@@ -2,10 +2,10 @@ import L from 'leaflet';
 import { useMap } from 'react-leaflet/esm/hooks'
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { getGeoJSONBBOXes, getClusterStatus } from '../../../redux/selectors/MainSliceSelectors';
+import { getGeoJSONBBOXes, getClusterStatus } from '../../redux/selectors/MainSliceSelectors';
 
-import blueMarker from '../../../assets/img/layer_position_icon_blue.png'
-import redMarker from '../../../assets/img/layer_position_icon.png'
+import blueMarker from '../../assets/img/layer_position_icon_blue.png'
+import redMarker from '../../assets/img/layer_position_icon.png'
 
 export default function CentersClustersLayer() {
 

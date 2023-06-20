@@ -13,12 +13,12 @@ import { useSelector } from 'react-redux';
 import { getActiveLayersWithoutStyle, getAvailableLayerReadinessStatus, getBBOXStatus, getGeoJSONBBOXes } from '../../redux/selectors/MainSliceSelectors';
 
 // Custom Leaflet components
-import CentersClustersLayer from './map-components/CentersClustersLayer';
-import GeonodeWMSLayer from './map-components/GeonodeWMSLayer';
+import CentersClustersLayer from './CentersClustersLayer';
+import GeonodeWMSLayer from './GeonodeWMSLayer';
 import BBOXFilterTracker from './BBOXFilterTracker';
-import PanelsToggleControls from './map-components/PanelsToggleControls';
-import EsriVectorBasemapLayer from './map-components/EsriBasemapVectorLayer';
-import MapInvalidator from './map-components/MapInvalidator';
+import PanelsToggleControls from './PanelsToggleControls';
+import EsriVectorBasemapLayer from './EsriBasemapVectorLayer';
+import MapInvalidator from './MapInvalidator';
 
 export default function LeafletMap(){
 

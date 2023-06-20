@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux"
-import { getActiveLayerStyleById } from "../../../redux/selectors/MainSliceSelectors"
+import { getActiveLayerStyleById } from "../../redux/selectors/MainSliceSelectors"
 import { WMSTileLayer } from 'react-leaflet/esm/WMSTileLayer'
 import { openLegendPanel } from "./PanelsToggleControls"
 import { useEffect, useState } from "react"
