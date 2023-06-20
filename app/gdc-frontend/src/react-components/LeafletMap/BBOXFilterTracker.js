@@ -1,6 +1,6 @@
 import { useMap, useMapEvent } from 'react-leaflet/esm/hooks'
-import { store } from '../../..';
-import { setBBOXFilter } from '../../../redux/slices/MainSlice';
+import { store } from '../..';
+import { setBBOXFilter } from '../../redux/slices/MainSlice';
 
 export default function BBOXFilterTracker() {
 

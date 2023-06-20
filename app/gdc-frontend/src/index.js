@@ -20,9 +20,9 @@ import UIkit from 'uikit';
 import Icons from 'uikit/dist/js/uikit-icons';
 import { configureStore } from '@reduxjs/toolkit'
 import { Provider, useSelector } from 'react-redux';
-import LegendPanel from './react-components/LegendPanel/LegendPanel';
-import SearchPanel from './react-components/SearchPanel/SearchPanel';
-import LeafletMap from './react-components/LeafletMap/LeafletMap';
+import LegendPanel from './react-components/LegendPanel';
+import SearchPanel from './react-components/SearchPanel';
+import LeafletMap from './react-components/LeafletMap';
 import { getAvailableLayerReadinessStatus } from './redux/selectors/MainSliceSelectors';
 import Preloader from './react-components/Utils/Preloader';
 import mainSlice from './redux/slices/MainSlice';

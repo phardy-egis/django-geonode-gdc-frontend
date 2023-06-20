@@ -15,7 +15,7 @@ import { getActiveLayersWithoutStyle, getAvailableLayerReadinessStatus, getBBOXS
 // Custom Leaflet components
 import CentersClustersLayer from './map-components/CentersClustersLayer';
 import GeonodeWMSLayer from './map-components/GeonodeWMSLayer';
-import BBOXFilterTracker from './map-components/BBOXFilterTracker';
+import BBOXFilterTracker from './BBOXFilterTracker';
 import PanelsToggleControls from './map-components/PanelsToggleControls';
 import EsriVectorBasemapLayer from './map-components/EsriBasemapVectorLayer';
 import MapInvalidator from './map-components/MapInvalidator';
