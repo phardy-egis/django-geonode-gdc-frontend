@@ -22,7 +22,7 @@ export default function GeonodeWMSLayer(props) {
 
     // WMS Option used to display the request layer
     var wmsOptions = {
-        layers: props.details.alternate,
+        layers: props.layer.details.alternate,
         transparent: true,
         format: 'image/png',
         maxZoom: 20,
