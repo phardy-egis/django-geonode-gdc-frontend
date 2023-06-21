@@ -12,8 +12,8 @@ import ResultItem from "./ResultItem";
 import RegionFilter from "./RegionFilter";
 import FetchWrapper from "../Utils/customFetch";
 import { useSelector, useDispatch } from 'react-redux'
-import { getSearchParams } from "../../redux/selectors/MainSliceSelectors";
-import { setSearchFilter, setCategoryFilter, setStartDateFilter, setEndDateFilter } from "../../redux/slices/MainSlice";
+import { getSearchLayerIDs, getSearchParams } from "../../redux/selectors/MainSliceSelectors";
+import { setSearchFilter, setCategoryFilter, setStartDateFilter, setEndDateFilter, setsearchLayerIDs } from "../../redux/slices/MainSlice";
 import debounce from 'lodash.debounce';
 import NextLoader from "./NextLoader";
 
@@ -44,6 +44,7 @@ export default function SearchPanel(props) {
     const [resultsCount, setResultsCount] = useState(0)
     const [results, setResults] = useState([])
     const [nextURL, setNextURL] = useState(false)
+    const searchLayerIDs = useSelector(state => getSearchLayerIDs(state))
 
     useEffect(() => {
         if (resultsReady) {
@@ -53,6 +54,8 @@ export default function SearchPanel(props) {
                 .then((res) => res.json())
                 .then((data) => {
                     setResults(data.results)
+                    const newSearchLayerIDs = data.results.map(feature => feature.properties.pk)
+                    dispatch(setsearchLayerIDs(newSearchLayerIDs))
                     setResultsReady(true)
                     if (data.next){
                         setNextURL(data.next)
@@ -111,6 +114,9 @@ export default function SearchPanel(props) {
             .then((res) => res.json())
             .then((data) => {
                 setResults(results.concat(data.results))
+                const newSearchLayerIDs = data.results.map(feature => feature.properties.pk)
+                console.log([...searchLayerIDs, newSearchLayerIDs])
+                dispatch(setsearchLayerIDs([...searchLayerIDs, ...newSearchLayerIDs]))
                 if (data.next) {
                     setNextURL(data.next)
                 }
@@ -153,7 +159,7 @@ export default function SearchPanel(props) {
     }
     else {
         resultsDOM = (
-                    <p><span data-uk-spinner="ratio: 0.6"></span>&nbsp;Loading...</p>
+            <p><span data-uk-spinner="ratio: 0.6"></span>&nbsp;Loading...</p>
         )
     }
 
@@ -227,7 +233,7 @@ export default function SearchPanel(props) {
                             {/* Results list */}
                             <div className="uk-width-expand uk-margin-top uk-animation-fade uk-padding-remove">
                                 <label className="uk-form-label uk-text-bolder">{resultsCount} Results</label>
-                                {/* <span className="uk-text-light uk-text-small uk-text-muted">({results.length} listed)</span> */}
+                                <span className="uk-text-light uk-text-small uk-text-muted" data-uk-tooltip="Scroll down to load more results">&nbsp;&nbsp;({results.length} displayed <span data-uk-icon="icon: info; ratio: 0.8"></span>)</span>
                                 <div className="uk-width-1-1 uk-overflow-auto gdc-custom-scroller uk-margin-small-top uk-padding-small uk-padding-remove-top uk-padding-remove-bottom" style={{ height: 'calc( 100vh - 130px )' }}>
                                     {resultsDOM}
                                     {nextLoaderDOM}

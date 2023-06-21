@@ -4,15 +4,15 @@ const mainSlice = createSlice({
     name: 'main',
     initialState: {
         filterByMapExtent: true,
-        filters: [],
-        maxZIndex:0,
-        activeLayers: [],
-        availableLayersReady: false,
-        availableLayers:[],
-        geoJSONBBOXes:{},
         clusterIsActive: true,
         bboxIsActive: true,
         zoomFocus: null,
+        filters: [],
+        geoJSONBBOXesReady: false,
+        geoJSONBBOXes:{},
+        maxZIndex:0,
+        searchLayerIDs: [],
+        activeLayers: [],
     },
     reducers: {
         // This function sets the value of search filter
@@ -146,8 +146,8 @@ const mainSlice = createSlice({
             state.activeLayers = updatedActiveLayers
         },
 
-        setAvailableLayersReady: (state, action) => {
-            state.availableLayersReady = action.payload
+        setgeoJSONBBOXesReady: (state, action) => {
+            state.geoJSONBBOXesReady = action.payload
         },
 
         setGeoJSONBBOXes: (state, action) => {
@@ -156,6 +156,10 @@ const mainSlice = createSlice({
 
         setZoomFocus: (state, action) => {
             state.zoomFocus = action.payload
+        },
+
+        setsearchLayerIDs: (state, action) => {
+            state.searchLayerIDs = action.payload
         }
 
     }
@@ -177,8 +181,8 @@ export const {
     removeLayerById,
     setLayerOpacity,
     toggleLayerVisibility,
-    setAvailableLayers,
-    setAvailableLayersReady,
+    setgeoJSONBBOXesReady,
     setGeoJSONBBOXes,
-    setZoomFocus
+    setZoomFocus,
+    setsearchLayerIDs
 } = mainSlice.actions

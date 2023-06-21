@@ -34,7 +34,7 @@ export const store = configureStore({
 
 // Used to track store changes
 // store.subscribe(() => {
-//     console.log("store changed!", store.getState());
+//     console.log("store changed!", store.getState().searchLayerIDs);
 // });
 
 // This component is used to wrap <App> and <Preloader> components inside a similar tag.
@@ -48,9 +48,9 @@ export function AppWrapper(){
 
 export function App(){
 
-    const availableLayersReady = useSelector(state => getAvailableLayerReadinessStatus(state))
+    const geoJSONBBOXesReady = useSelector(state => getAvailableLayerReadinessStatus(state))
 
-    if (availableLayersReady){
+    if (geoJSONBBOXesReady){
         return (
             <Provider store={store}>
                 <div className="uk-height-1-1 uk-width-1-1 uk-overflow-hidden uk-margin-remove uk-animation-fade" data-uk-grid>

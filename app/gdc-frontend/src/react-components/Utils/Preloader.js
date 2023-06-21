@@ -1,4 +1,4 @@
-import {setAvailableLayersReady, setGeoJSONBBOXes} from '../../redux/slices/MainSlice';
+import {setgeoJSONBBOXesReady, setGeoJSONBBOXes} from '../../redux/slices/MainSlice';
 import FetchWrapper, { PaginatedDataFetcher } from './customFetch';
 import { useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react';
@@ -22,7 +22,7 @@ export default function Preloader() {
     }
 
     function handleResultReadyChange(status) {
-        dispatch(setAvailableLayersReady(status))
+        dispatch(setgeoJSONBBOXesReady(status))
         setResultsReady(true)
     }
 

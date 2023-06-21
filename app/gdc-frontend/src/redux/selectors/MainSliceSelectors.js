@@ -97,7 +97,7 @@ export function layerExists(state, layerid) {
 }
 
 export function getAvailableLayerReadinessStatus(state){
-    return state.availableLayersReady
+    return state.geoJSONBBOXesReady
 }
 
 export function getAvailableLayers(state) {
@@ -105,7 +105,12 @@ export function getAvailableLayers(state) {
 }
 
 export function getActiveLayers(state) {
-    return state.getActiveLayers
+    return state.activeLayers
+}
+
+export function getActiveLayersIDs(state) {
+    const activeLayersIDs = state.activeLayers.map(layer => layer.properties.pk)
+    return activeLayersIDs
 }
 
 export function getGeoJSONBBOXes(state) {
@@ -114,4 +119,8 @@ export function getGeoJSONBBOXes(state) {
 
 export function getZoomFocus(state) {
     return state.zoomFocus
+}
+
+export function getSearchLayerIDs(state){
+    return state.searchLayerIDs
 }
