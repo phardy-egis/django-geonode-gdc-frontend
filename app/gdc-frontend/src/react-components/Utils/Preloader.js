@@ -1,5 +1,5 @@
 import {setAvailableLayersReady, setGeoJSONBBOXes} from '../../redux/slices/MainSlice';
-import { PaginatedDataFetcher } from './customFetch';
+import FetchWrapper, { PaginatedDataFetcher } from './customFetch';
 import { useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react';
 
@@ -36,6 +36,16 @@ export default function Preloader() {
                 (data) => { return data }
             )
             dataFetcher.fetch()
+            
+            // This request authenticates the user against geoserver
+            const oauth2Fetcher = new FetchWrapper(
+                'geoserver/web/j_spring_oauth2_geonode_login',
+                {},
+                [],
+                false
+            )
+            oauth2Fetcher.fetch()
+
         }
     }, [resultReady])
 
