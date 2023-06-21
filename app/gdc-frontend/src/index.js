@@ -32,7 +32,7 @@ export const store = configureStore({
     reducer: mainSlice.reducer
 })
 
-// // Used to track store changes
+// Used to track store changes
 // store.subscribe(() => {
 //     console.log("store changed!", store.getState());
 // });

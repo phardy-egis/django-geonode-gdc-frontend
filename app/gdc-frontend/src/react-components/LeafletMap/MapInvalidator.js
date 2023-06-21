@@ -10,9 +10,13 @@ export default function MapInvalidator() {
 
     useEffect(() => {
         if (!ready) {
-            const resizeObserver = new ResizeObserver(debounce((entries) => {
-                map.invalidateSize()
-            }, 25)
+            const resizeObserver = new ResizeObserver(
+                // (entries) => {
+                //     map.invalidateSize()
+                // }
+                debounce((entries) => {
+                    map.invalidateSize()
+                }, 25)
             )
             resizeObserver.observe(map._container);
             setReady(true)

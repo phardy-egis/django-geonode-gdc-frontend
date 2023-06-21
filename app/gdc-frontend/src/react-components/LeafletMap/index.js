@@ -7,57 +7,25 @@ import "leaflet-loading/src/Control.Loading.css"
 import "leaflet.markercluster"
 import { MapContainer } from 'react-leaflet/esm/MapContainer'
 import { Pane } from 'react-leaflet/esm/Pane'
-import { GeoJSON } from 'react-leaflet/esm/GeoJSON'
 
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import { getActiveLayersWithoutStyle, getAvailableLayerReadinessStatus, getBBOXStatus, getGeoJSONBBOXes } from '../../redux/selectors/MainSliceSelectors';
 
 // Custom Leaflet components
 import CentersClustersLayer from './CentersClustersLayer';
-import GeonodeWMSLayer from './GeonodeWMSLayer';
+import GeonodeWMSLayers from './GeonodeWMSLayers';
 import BBOXFilterTracker from './BBOXFilterTracker';
 import PanelsToggleControls from './PanelsToggleControls';
 import EsriVectorBasemapLayer from './EsriBasemapVectorLayer';
 import MapInvalidator from './MapInvalidator';
 import ZoomFocus from './ZoomFocus';
+import BBOXFilterLayer from './BBOXLeafletLayer';
 
 export default function LeafletMap(){
 
-    // geoJSONData selectors
-    const geoJSONBBOXesData = useSelector(state => getGeoJSONBBOXes(state))
-    const availableLayersReadiness = useSelector(state => getAvailableLayerReadinessStatus(state))
-    const bboxLayerActive = useSelector(state => getBBOXStatus(state))
-    const activeLayers = useSelector(state => getActiveLayersWithoutStyle(state))
 
-    // DOM rendering for GeoJSON BBOXes
-    var geoJSONDom = null
-    if (availableLayersReadiness){
 
-        var geojsonStyle = {
-            "color": "#0000FF",
-            "weight": 1,
-            "opacity": 0,
-            "fillOpacity": 0,
-        };
-        if (bboxLayerActive){
-            geojsonStyle = {
-                "color": "#0000FF",
-                "weight": 1,
-                "opacity": 0.8,
-                "fillOpacity": 0,
-            };
-        }
-        geoJSONDom = (<GeoJSON data={geoJSONBBOXesData} style={geojsonStyle} />)
-        
-    }
-
-    if (activeLayers.length > 0){
-        var layerDOM = []
-        for (let index = 0; index < activeLayers.length; index++) {
-            const layer = activeLayers[index];
-            layerDOM.push(<GeonodeWMSLayer key={layer.id} layerid={layer.id} details={layer.details}/>)           
-        }
-    }
+    // console.log('Map rendered')
 
     return (                    
         <div className="uk-width-expand uk-height-1-1 uk-padding-remove uk-animation-fade">                        
@@ -70,8 +38,8 @@ export default function LeafletMap(){
                 <Pane name="background" style={{ zIndex: -300 }}>
                     <EsriVectorBasemapLayer apiKey={process.env.REACT_APP_ESRI_API_KEY} pane='background'></EsriVectorBasemapLayer>
                 </Pane>
-                {layerDOM}
-                {geoJSONDom}
+                <GeonodeWMSLayers/>
+                <BBOXFilterLayer/>
 
             </MapContainer>
         </div>
