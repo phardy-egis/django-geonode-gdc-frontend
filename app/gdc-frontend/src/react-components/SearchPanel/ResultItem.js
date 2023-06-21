@@ -27,14 +27,14 @@ export default function ResultItem(props) {
                     addLayer({
                         id: id,
                         details: details,
-                        bbox: props.geojson
+                        geojson: props.geojson
                     })
                 )
                 // Removing the loading spinner
                 setLayerLoading(false)
 
                 // Zooming onto layer extent
-                dispatch( setZoomFocus(props.geojson) )
+                dispatch(setZoomFocus(props.geojson))
             })
             .catch(function (error) {
                 UIkit.notification(`Error. ${error}`, { status: 'danger' })

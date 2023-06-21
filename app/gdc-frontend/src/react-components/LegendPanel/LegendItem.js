@@ -4,7 +4,7 @@ import UIkit from 'uikit';
 import Icons from 'uikit/dist/js/uikit-icons';
 import { getActiveLayerById } from '../../redux/selectors/MainSliceSelectors';
 import ImgPlus from '../Utils/ImgPlus';
-import { removeLayerById, setLayerOpacity, toggleLayerVisibility } from '../../redux/slices/MainSlice';
+import { removeLayerById, setLayerOpacity, setZoomFocus, toggleLayerVisibility } from '../../redux/slices/MainSlice';
 import { debounce } from 'lodash';
 UIkit.use(Icons);
 
@@ -19,7 +19,8 @@ export default function LegendItem (props) {
     const layer = useSelector(state => getActiveLayerById(state, props.layerid), shallowEqual)
     
     function handleZoomExtentClick() {
-        return null
+        console.log(layer)
+        dispatch(setZoomFocus(layer.geojson))
     }
 
     function handleVisibilityChange(e) {

@@ -86,7 +86,7 @@ const mainSlice = createSlice({
             const newLayer = {
                 id: action.payload.id,              // From action.payload
                 details: action.payload.details,    // From action.payload
-                //bbox: action.payload.bbox,
+                geojson: action.payload.geojson,
                 style: { // The style enable the possibility to isolate these props for legend properties handlers
                     visibility: true,
                     opacity: 1.0,
